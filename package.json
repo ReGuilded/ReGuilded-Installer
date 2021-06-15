@@ -1,0 +1,23 @@
+{
+  "name": "reguilded-setup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "electron src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReGuilded/ReGuilded-Setup.git"
+  },
+  "author": "ReGuilded",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ReGuilded/ReGuilded-Setup/issues"
+  },
+  "homepage": "https://github.com/ReGuilded/ReGuilded-Setup#readme",
+  "dependencies": {
+    "@electron/remote": "^1.1.0",
+    "electron": "^13.1.2"
+  }
+}
