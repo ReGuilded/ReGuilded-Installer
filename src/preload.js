@@ -1,8 +1,10 @@
+const appUtil = require("./app/util");
 const { join } = require("path");
 const { access } = require("fs");
 
 // Expected ~/.reguilded path.
 const reguildedPath = join(process.env.APPDATA ?? process.env.HOME, ".reguilded");
+window.reguildedPath = reguildedPath;
 
 window.addEventListener('DOMContentLoaded', () => {
     // Elements
@@ -11,30 +13,33 @@ window.addEventListener('DOMContentLoaded', () => {
     const injectBtn = document.getElementById("injectBtn");
     const uninjectBtn = document.getElementById("uninjectBtn");
 
-    // Checks if ~/.reguilded exists, using fs.constants.F_OK (default).
-    access(reguildedPath, (err) => {
-        if (err) {  // ~/.reguilded does not exist.
-            // Starts of allowing Custom Install Location.
-            // statusText.innerHTML = "Already Installed? " +
-            //     "<button id='browseBtn' class='browse' onclick='onclickBrowse()'>Browse</button>.";
-            // statusText.classList.remove("hidden");
+    // Get Platform Module.
+    const [platformModule, error] = appUtil.getPlatformModule();
 
-            installBtn.classList.remove("hidden");
-        } else {    // ~/.reguilded exists.
-            const { isInjected } = require(join(reguildedPath, "inject/injectUtil"));
+    // Handle if the users platform is not supported.
+    if (error === "UNSUPPORTED_PLATFORM") {
+        statusText.innerHTML = `Your platform, ${process.platform}, is unsupported.` +
+            "<br><button id='issueBtn' class='statusBtn' onclick='onclickIssue(\"UNSUPPORTED_PLATFORM\")'>Please submit a new issue.</button>"
+        statusText.classList.remove("hidden");
+    } else if (platformModule !== null) {   // If the users platform is supported.
+        window.platformModule = platformModule;
 
-            if (isInjected() == null) {
-                statusText.innerText = "There was an error.";
-                statusText.classList.remove("hidden");
+        // Checks if ~/.reguilded exists, using fs.constants.F_OK (default).
+        access(reguildedPath, async (err) => {
+            if (err) {  // ~/.reguilded does not exist.
+                installBtn.classList.remove("hidden");
+            } else {    // ~/.reguilded exists.
+                appUtil.isInjected(platformModule).then((isInjected) => {
+                    if (!isInjected) {
+                        // ReGuilded is not Injected so reveal the Injected Button.
+                        injectBtn.classList.remove("hidden");
+                    } else if (isInjected) {
+                        // ReGuilded is already Injected so reveal the Uninject Button.
+                        uninjectBtn.classList.remove("hidden");
+                    }
+                });
             }
-
-            // Check if ReGuilded is already Injected.
-            if (!isInjected()) {
-                injectBtn.classList.remove("hidden");
-            } else {
-                uninjectBtn.classList.remove("hidden");
-            }
-        }
-    });
+        });
+    }
 });
 
