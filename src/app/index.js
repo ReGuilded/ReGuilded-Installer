@@ -109,7 +109,8 @@ uninjectBtn.addEventListener("click", async function(event) {
             // Uninject ReGuilded
             await uninject();
 
-            clearInterval(_interval);
+            // Setup Uninject Button to replace Status Text.
+            handleSuccess(injectBtn);
         } catch (err) { handleError(uninjectBtn, err); }
 
         // Debounce Over
