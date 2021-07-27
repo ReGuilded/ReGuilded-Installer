@@ -15,6 +15,7 @@
 
 ## Executables
 There are currently no executables for the ReGuilded Setup, as we are still working on it. We will create an executable when the setup/installer is ready to be released.
+*We're currently working on creating an executable.*
 
 ## Testing/Development Builds
 Currently, to test the setup you have to run `npm install` then `npm run app` this will open the electron app. Everything should be logged if there are any errors.
