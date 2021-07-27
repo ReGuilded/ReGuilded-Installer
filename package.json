@@ -1,10 +1,12 @@
 {
   "name": "reguilded-setup",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1-alpha",
+  "description": "ReGuilded Setup is an easy installer for ReGuilded.",
   "main": "src/index.js",
   "scripts": {
-    "app": "electron src/index.js"
+    "app": "electron src/index.js",
+    "dev": "electron-builder",
+    "dist": "electron-builder -mwl"
   },
   "repository": {
     "type": "git",
@@ -19,13 +21,30 @@
   "dependencies": {
     "@electron/remote": "^1.1.0",
     "@octokit/core": "^3.5.1",
-    "electron": "^13.1.2",
+
     "fs-extra": "^8.1.0",
     "got": "^9.6.0",
     "unzipper": "^0.10.11"
   },
+  "devDependencies": {
+    "electron": "^13.1.2",
+    "electron-builder": "^22.11.7"
+  },
   "build": {
-    "appId": "com.reguilded.setup",
-    "productName": "ReGuilded Setup"
+    "appId": "dev.reguilded.setup",
+    "productName": "ReGuilded Setup",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": "zip",
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    }
   }
 }
