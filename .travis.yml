@@ -38,9 +38,9 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "electron-build --linux --win"
+        /bin/bash -c "npm run dist_wl"
     else
-      electron-build
+      npm run dist_mac
     fi
 
 before_cache:

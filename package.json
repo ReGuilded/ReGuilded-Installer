@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "app": "electron src/index.js",
-    "dev": "electron-builder",
-    "dist": "electron-builder -mwl"
+    "dist_wl": "electron-builder --win --linux",
+    "dist_mac": "electron-builder --mac"
   },
   "repository": {
     "type": "git",
