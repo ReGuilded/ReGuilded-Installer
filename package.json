@@ -37,7 +37,7 @@
       "icon": "build/icon.png"
     },
     "win": {
-      "target": "zip",
+      "target": "portable",
       "icon": "build/icon.png"
     },
     "linux": {
