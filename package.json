@@ -41,7 +41,7 @@
       "icon": "build/icon.png"
     },
     "linux": {
-      "target": "deb",
+      "target": "AppImage",
       "icon": "build/icon.png"
     }
   }
