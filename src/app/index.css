@@ -169,6 +169,22 @@ hr {
     color: #616161;
     user-select: none;
 }
+/* Button */
+.statusBtn {
+    margin: 1vh;
+    border: 2px #616161 solid;
+    background: none;
+    color: #616161;
+    border-radius: 1vh;
+    padding: 1vh;
+
+    transition: 200ms ease;
+}
+.statusBtn:hover {
+    cursor: pointer;
+    border: 2px #A5A5A5 solid;
+    color: #A5A5A5;
+}
 
 .browse {
     color: #707070;
