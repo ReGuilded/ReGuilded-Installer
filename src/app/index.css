@@ -101,12 +101,13 @@ hr {
     justify-content: center;
     text-align: center;
 
-    padding: 1rem;
+    padding: 0 1rem 1rem;
 
     -webkit-app-region: no-drag;
 }
 .controlBtns {
     display: flex;
+    flex-direction: column;
     align-content: center;
     justify-content: center;
 }
@@ -140,15 +141,10 @@ hr {
 .controlBtns > button:active {
     background-color: var(--background-level-0);
 }
-.install {
-    color: white;
-}
-.install:hover {
-    box-shadow: 0 0 0.7rem white;
-}
+
+/* Buttons */
 .inject {
     background-color: #cc3333;
-    color: white;
 }
 .inject:hover {
     background-color: rgb(238, 76, 76);
@@ -156,7 +152,6 @@ hr {
 }
 .uninject {
     background-color: #f5c400;
-    color: #111820;
 }
 .uninject:hover {
     background-color: #f8d547;
