@@ -4,7 +4,7 @@ const { exec } = require("child_process");
 
 module.exports = async() => {
     // Define Guilded Directory from Global Variable for easy access.
-    const guildedDir = window.platformModule.getAppDir();
+    const guildedDir = window.platform.dir;
 
     // Double Check if ReGuilded is already Injected.
     access(guildedDir, async (err) => {
@@ -32,8 +32,13 @@ module.exports = async() => {
                 });
             });
 
-            // Close Guilded.
-            exec(window.platformModule.closeGuilded);
+            // Relaunch Guilded
+            exec(window.platform.close, () => {
+                exec(window.platform.open(), (openError) => {
+                    if (openError)
+                        throw new Error("E" + openError);
+                })
+            })
         } else throw new Error("ALREADY_INJECTED");
     })
 }
