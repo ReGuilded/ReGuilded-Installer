@@ -1,46 +1,23 @@
-const { Octokit } = require("@octokit/core");
-const { join, dirname } = require("path");
+// Custom Modules
+const gitHandler = require("../util").gitHandler;
+
+// NPM Modules
 const { Extract } = require("unzipper");
 const { copy } = require("fs-extra");
 const { stream } = require("got");
+const { join } = require("path");
 const fs = require("fs");
 
 module.exports = async (devBuild) => {
-    const octokit = new Octokit();
-    let zipUrl, commitSha;
 
-    if (!devBuild) {    // Latest Release
-        const latestRelease = await octokit.request("GET /repos/{owner}/{repo}/releases/latest", {
-            owner: "ReGuilded",
-            repo: "ReGuilded"
-        });
-        const tagName = latestRelease.data.tag_name;
+    const commit = gitHandler.getCommit(devBuild);
 
-        const repoTags = await octokit.request("GET /repos/{owner}/{repo}/tags", {
-            owner: "ReGuilded",
-            repo: "ReGuilded"
-        })
-        const tagForRelease = repoTags.data.find(object => object.name === tagName);
-
-        commitSha = tagForRelease.commit.sha;
-        zipUrl = latestRelease.data.zipball_url;
-    } else {    // Latest Commit
-        const repoCommits = await octokit.request("GET /repos/{owner}/{repo}/commits", {
-            owner: "ReGuilded",
-            repo: "ReGuilded"
-        });
-        const latestCommit = repoCommits.data[0];
-
-        // Set Commit Sha & Download URL.
-        commitSha = latestCommit.sha;
-        zipUrl = `https://api.github.com/repos/ReGuilded/ReGuilded/zipball/${commitSha}`;
-    }
     const reguildedDir = join(process.env.APPDATA ?? process.env.HOME, ".reguilded");
     const zipPath = reguildedDir + ".zip";
 
     // Download Commit Zip.
     await new Promise((resolve, reject) => {
-        stream(zipUrl)
+        stream(commit.zipUrl)
             .pipe(fs.createWriteStream(zipPath))
             .on("finish", function() {
                 fs.createReadStream(zipPath)
@@ -53,18 +30,17 @@ module.exports = async (devBuild) => {
             });
     });
 
-    // Move downloaded files into `~/.reguilded` and then delete the old folder. (REPLACE WITH IGNORANCE)
-    // Ignore Folders:  /inject/, /logo/
-    // Ignore Files:    .gitignore, LICENSE, package.json, package-lock.json, README.md, SECURITY.md
+    // Move downloaded files into `~/.reguilded` and then delete the old folder.
     await new Promise((resolve, reject) => {
         fs.readdir(reguildedDir, {withFileTypes: true}, (err, files) => {
            const dirs = files.filter(file => file.isDirectory());
-           const dir = join(reguildedDir, dirs[0].name);
+           const gitDir = join(reguildedDir, dirs[0].name);
+           const appDir = join(gitDir, "src/app");
 
-           copy(dir, reguildedDir, { recursive: true, errorOnExist: false, overwrite: true}, (err) => {
+           copy(appDir, reguildedDir, { recursive: true, errorOnExist: false, overwrite: true}, (err) => {
                if (err) throw err;
                else {
-                    fs.rmdir(dir, {recursive: true}, (err) => {
+                    fs.rmdir(gitDir, {recursive: true}, (err) => {
                         if (err) reject(err);
                         else resolve();
                     })
@@ -75,7 +51,7 @@ module.exports = async (devBuild) => {
 
     // Create new `.sha` file inside `~/.reguilded` that has the commitSha used for checking latest version.
     await new Promise((resolve, reject) => {
-        fs.writeFile(join(reguildedDir, ".sha"), commitSha, (err) => {
+        fs.writeFile(join(reguildedDir, ".sha"), commit.commitSha, (err) => {
             if (err) reject(err);
             else resolve();
         });
