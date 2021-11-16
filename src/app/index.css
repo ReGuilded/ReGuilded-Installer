@@ -101,12 +101,13 @@ hr {
     justify-content: center;
     text-align: center;
 
-    padding: 1rem;
+    padding: 0 1rem 1rem;
 
     -webkit-app-region: no-drag;
 }
 .controlBtns {
     display: flex;
+    flex-direction: column;
     align-content: center;
     justify-content: center;
 }
@@ -140,15 +141,21 @@ hr {
 .controlBtns > button:active {
     background-color: var(--background-level-0);
 }
-.install {
-    color: white;
+
+/* Version */
+#versionText {
+    color: #616161;
+    font-weight: bold;
+    transition: 200ms ease;
 }
-.install:hover {
-    box-shadow: 0 0 0.7rem white;
+#versionText:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
+
+/* Buttons */
 .inject {
     background-color: #cc3333;
-    color: white;
 }
 .inject:hover {
     background-color: rgb(238, 76, 76);
@@ -156,7 +163,6 @@ hr {
 }
 .uninject {
     background-color: #f5c400;
-    color: #111820;
 }
 .uninject:hover {
     background-color: #f8d547;
@@ -168,6 +174,22 @@ hr {
     font-size: .9rem;
     color: #616161;
     user-select: none;
+}
+/* Button */
+.statusBtn {
+    margin: 1vh;
+    border: 2px #616161 solid;
+    background: none;
+    color: #616161;
+    border-radius: 1vh;
+    padding: 1vh;
+
+    transition: 200ms ease;
+}
+.statusBtn:hover {
+    cursor: pointer;
+    border: 2px #A5A5A5 solid;
+    color: #A5A5A5;
 }
 
 .browse {
