@@ -142,6 +142,17 @@ hr {
     background-color: var(--background-level-0);
 }
 
+/* Version */
+#versionText {
+    color: #616161;
+    font-weight: bold;
+    transition: 200ms ease;
+}
+#versionText:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* Buttons */
 .inject {
     background-color: #cc3333;
