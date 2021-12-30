@@ -20,7 +20,7 @@ module.exports = async() => {
                 // Elevate for Linux and run Terminal Commands
                 // Or use FS for Windows & Mac
                 if (process.platform === "linux" && process.getuid() !== 0) {
-                    const command = `echo '{"name": "Guilded", "main": "index.js"}' | tee -a ${join(guildedDir, "package.json")} > /dev/null &&` +
+                    const command = `mkdir ${guildedDir} && echo '{"name": "Guilded", "main": "index.js"}' | tee -a ${join(guildedDir, "package.json")} > /dev/null &&` +
                         `echo 'require("${patcherPath}")' | tee -a ${join(guildedDir, "index.js")} > /dev/null`
                     sudo.exec(command, {name: "ReGuilded Installer"}, function(err, stdout, stderr) {
                         if (err) throw reject(err);
