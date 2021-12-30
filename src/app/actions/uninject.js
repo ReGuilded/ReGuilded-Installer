@@ -1,6 +1,5 @@
 const { access, rm } = require("fs");
 const { exec } = require("child_process");
-const {join} = require("path");
 const sudo = require("sudo-prompt");
 
 module.exports = async() => {
