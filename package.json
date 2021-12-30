@@ -1,7 +1,7 @@
 {
-  "name": "reguilded-setup",
+  "name": "reguilded-installer",
   "version": "0.0.2-alpha",
-  "description": "ReGuilded Setup is an easy installer for ReGuilded.",
+  "description": "ReGuilded Installer is an easy installer for ReGuilded.",
   "main": "src/index.js",
   "scripts": {
     "app": "electron src/index.js",
@@ -9,19 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ReGuilded/ReGuilded-Setup.git"
+    "url": "git+https://github.com/ReGuilded/ReGuilded-Installer.git"
   },
   "author": "ReGuilded",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ReGuilded/ReGuilded-Setup/issues"
+    "url": "https://github.com/ReGuilded/ReGuilded-Installer/issues"
   },
-  "homepage": "https://github.com/ReGuilded/ReGuilded-Setup#readme",
+  "homepage": "https://github.com/ReGuilded/ReGuilded-Installer#readme",
   "dependencies": {
     "@electron/remote": "^2.0.1",
     "@octokit/core": "^3.5.1",
     "fs-extra": "^10.0.0",
     "got": "^11.8.2",
+    "sudo-prompt": "^9.2.1",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
@@ -29,8 +30,8 @@
     "electron-builder": "^22.13.1"
   },
   "build": {
-    "appId": "dev.reguilded.setup",
-    "productName": "ReGuilded Setup",
+    "appId": "dev.reguilded.installer",
+    "productName": "ReGuilded Installer",
     "mac": {
       "category": "public.app-category.utilities",
       "target": "dmg",
