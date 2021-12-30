@@ -64,16 +64,13 @@ installBtn.addEventListener("click", async function(event) {
         // Call In Progress Handler.
         handleInProgress(installBtn, "Installing ReGuilded");
 
-        try {
-            // Install ReGuilded and pass if the shiftKey was pressed or not.
-            await install(event.shiftKey);
-
+        install(event.shiftKey).then(() => {
             // Setup Inject Button to replace Status Text.
             handleSuccess(injectBtn);
 
             // Send IPC for Computer Notification.
             ipcRenderer.send("reguilded_setup", "finished_install");
-        } catch (err) { handleError(installBtn, err); }
+        }).catch((err) => { handleError(installBtn, err); })
 
         // Debounce Over
         _debounce = false;
@@ -90,13 +87,11 @@ injectBtn.addEventListener("click", async function(event) {
         // Call In Progress Handler.
         handleInProgress(injectBtn, "Injecting ReGuilded");
 
-        try {
-            // Inject ReGuilded
-            await inject();
-
+        // Inject ReGuilded
+        inject().then(() => {
             // Setup Uninject Button to replace Status Text.
             handleSuccess(uninjectBtn);
-        } catch (err) { handleError(injectBtn, err); }
+        }).catch((err) => { handleError(injectBtn, err); });
 
         // Debounce Over
         _debounce = false;
@@ -112,13 +107,10 @@ uninjectBtn.addEventListener("click", async function(event) {
         // Call In Progress Handler.
         handleInProgress(uninjectBtn, "Uninjecting ReGuilded");
 
-        try {
-            // Uninject ReGuilded
-            await uninject();
-
+        uninject().then(() => {
             // Setup Uninject Button to replace Status Text.
             handleSuccess(injectBtn);
-        } catch (err) { handleError(uninjectBtn, err); }
+        }).catch((err) => { handleError(uninjectBtn, err); });
 
         // Debounce Over
         _debounce = false;

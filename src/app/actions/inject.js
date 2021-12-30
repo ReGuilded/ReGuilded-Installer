@@ -3,18 +3,16 @@ const { exec } = require("child_process");
 const { join, sep } = require("path");
 const sudo = require("sudo-prompt");
 
-module.exports = async() => {
-    // Define Guilded Directory from Global Variable for easy access.
-    const guildedDir = window.platform.dir;
+module.exports = () => {
+    return new Promise((resolve, reject) => {
+        // Define Guilded Directory from Global Variable for easy access.
+        const guildedDir = window.platform.dir;
 
-    // Double Check if ReGuilded is already Injected.
-    access(guildedDir, async (err) => {
-        if (err) {  // Not Injected
-            // Path to the Patcher.
-            const patcherPath = join(window.reguildedPath, "scripts/reguildedPatcher.js").replace(RegExp(sep.repeat(2), "g"), "/");
-
-            // Promise so the menu waits.
-            await new Promise((resolve, reject) => {
+        // Double Check if ReGuilded is already Injected.
+        access(guildedDir, async (err) => {
+            if (err) {  // Not Injected
+                // Path to the Patcher.
+                const patcherPath = join(window.reguildedPath, "scripts/reguildedPatcher.js").replace(RegExp(sep.repeat(2), "g"), "/");
 
                 // Makes the Guilded/Resources/App directory.
                 // Elevate for Linux and run Terminal Commands
@@ -42,15 +40,15 @@ module.exports = async() => {
                         });
                     });
                 }
-            });
 
-            // Relaunch Guilded
-            exec(window.platform.close, () => {
-                exec(window.platform.open(), (openError) => {
-                    if (openError)
-                        throw new Error("E" + openError);
+                // Relaunch Guilded
+                exec(window.platform.close, () => {
+                    exec(window.platform.open(), (openError) => {
+                        if (openError)
+                            throw new Error("E" + openError);
+                    })
                 })
-            })
-        } else throw new Error("ALREADY_INJECTED");
-    })
-}
+            } else throw reject("ALREADY_INJECTED");
+        });
+    });
+};
