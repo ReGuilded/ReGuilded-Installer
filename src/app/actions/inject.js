@@ -1,6 +1,7 @@
 const { writeFile, access, mkdir } = require("fs");
-const { join, sep } = require("path");
 const { exec } = require("child_process");
+const { join, sep } = require("path");
+const sudo = require("sudo-prompt");
 
 module.exports = async() => {
     // Define Guilded Directory from Global Variable for easy access.
@@ -15,21 +16,32 @@ module.exports = async() => {
             // Promise so the menu waits.
             await new Promise((resolve, reject) => {
 
-                // Make the Guilded/Resources/App directory.
-                mkdir(guildedDir, async (err) => {
-                    if (err) throw reject(err);
-
-                    // Create the Index File.
-                    else writeFile(join(guildedDir, "index.js"), `require("${patcherPath}");`, async (err) => {
+                // Makes the Guilded/Resources/App directory.
+                // Elevate for Linux and run Terminal Commands
+                // Or use FS for Windows & Mac
+                if (process.platform === "linux" && process.getuid() !== 0) {
+                    const command = `echo '{"name": "Guilded", "main": "index.js"}' | tee -a ${join(guildedDir, "package.json")} > /dev/null &&` +
+                        `echo 'require("${patcherPath}")' | tee -a ${join(guildedDir, "index.js")} > /dev/null`
+                    sudo.exec(command, {name: "ReGuilded Installer"}, function(err, stdout, stderr) {
+                        if (err) throw reject(err);
+                        else resolve();
+                    });
+                } else {
+                    mkdir(guildedDir, async (err) => {
                         if (err) throw reject(err);
 
-                        // Create the Package File.
-                        else writeFile(join(guildedDir, "package.json"), JSON.stringify({name: "Guilded", main: "index.js"}), async (err) => {
+                        // Create the Index File.
+                        else writeFile(join(guildedDir, "index.js"), `require("${patcherPath}");`, async (err) => {
                             if (err) throw reject(err);
-                            else resolve();
+
+                            // Create the Package File.
+                            else writeFile(join(guildedDir, "package.json"), JSON.stringify({name: "Guilded", main: "index.js"}), async (err) => {
+                                if (err) throw reject(err);
+                                else resolve();
+                            });
                         });
                     });
-                });
+                }
             });
 
             // Relaunch Guilded
