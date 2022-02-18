@@ -44,9 +44,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
                 loadApp();
             } else {
+                // TODO: Hover state doesn't work on the element?
                 versionText.innerText = release.versionString;
-                versionText.href = release.browserUrl
-                // versionText.onclick = function() { shell.openExternal(release.browserUrl)};
+                versionText.onclick = function() { shell.openExternal(release.browserUrl)};
 
                 // Checks if ~/.reguilded exists, using fs.constants.F_OK (default).
                 access(platform.reguildedDir, async (err) => {
