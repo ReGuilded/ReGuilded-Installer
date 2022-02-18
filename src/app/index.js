@@ -1,14 +1,6 @@
 // Node
-const { ipcRenderer, shell } = require("electron");
 const { install, inject, uninject } = require("./actions");
-const gitHandler = require("./util").gitHandler;
-
-// Elements
-const statusText = document.getElementById("statusText");
-const versionText = document.getElementById("versionText");
-const installBtn = document.getElementById("installBtn");
-const injectBtn = document.getElementById("injectBtn");
-const uninjectBtn = document.getElementById("uninjectBtn");
+const { ipcRenderer } = require("electron");
 
 let textValue, onclickValue = null;
 
@@ -64,7 +56,7 @@ installBtn.addEventListener("click", async function(event) {
         // Call In Progress Handler.
         handleInProgress(installBtn, "Installing ReGuilded");
 
-        install(event.shiftKey).then(() => {
+        install().then(() => {
             // Setup Inject Button to replace Status Text.
             handleSuccess(injectBtn);
 
@@ -145,32 +137,3 @@ async function onclickIssue(issue) {
             await shell.openExternal(`https://www.githubstatus.com/`);
     }
 }
-
-let keyPressDebounce = false;
-
-// When shift is pressed, change text of install button to Install (Dev).
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Shift" && !installBtn.classList.contains("hidden") && !keyPressDebounce) {
-        keyPressDebounce = true;
-        installBtn.innerText = "📥 Install (Dev)"
-
-        if (textValue == null && onclickValue == null) {
-            versionText.innerText = "Commit " + gitHandler.latestCommit.commit.sha.substring(0, 7) + " (Dev)";
-            versionText.onclick = function() { shell.openExternal(gitHandler.latestCommit.commit.html_url.replace("commit", "tree")) }
-        }
-    }
-});
-
-// When shift is no longer pressed, change text of install button to just Install.
-document.addEventListener("keyup", function(event) {
-    if (event.key === "Shift" && !installBtn.classList.contains("hidden")) {
-        keyPressDebounce = false;
-        installBtn.innerText = "📥 Install"
-
-        if (textValue == null && onclickValue == null) {
-            let re = new RegExp(":(.*)");
-            versionText.innerText = "v" + gitHandler.latestRelease.release.name.replace(re, "");
-            versionText.onclick = function() { shell.openExternal(gitHandler.latestRelease.release.html_url) };
-        }
-    }
-});

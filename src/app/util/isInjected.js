@@ -1,8 +1,8 @@
 const { access } = require("fs");
 
-module.exports = async(platform) => {
+module.exports = async (platform) => {
     return await new Promise((resolve) => {
-        access(platform.dir, (err) => {
+        access(platform.appDir, (err) => {
             resolve(!err);
         });
     });

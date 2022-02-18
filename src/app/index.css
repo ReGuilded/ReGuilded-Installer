@@ -52,6 +52,32 @@ img:hover {
     cursor: pointer;
 }
 
+/* Loading Splash */
+.loadingSplash {
+    width: 100%;
+    min-height: 100%;
+    opacity: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    transition: 200ms ease;
+
+    z-index: 2;
+}
+.loadingSplash.hiding {
+    opacity: 0;
+}
+.loadingMessage {
+    padding: 1rem;
+
+    text-align: center;
+    user-select: none;
+}
+
 /* App body */
 .main {
     width: 100%;
@@ -62,6 +88,9 @@ img:hover {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    text-align: center;
+
+    z-index: 1;
 }
 
 /**
@@ -73,14 +102,16 @@ img:hover {
     width: 12rem;
     height: auto;
 
-    fill: var(--reguilded-theme);
+    padding: 2rem;
+
+    user-select: none;
 }
 .welcomePanel {
     padding: 1rem;
 
     user-select: none;
 }
-.reGuildedMark {
+.reguildedMark {
     color: var(--reguilded-theme);
 }
 hr {
@@ -114,7 +145,6 @@ hr {
 .hidden {
     display: none;
 }
-
 .controlBtns button {
     border: none;
     border-radius: 0.5rem;
@@ -175,6 +205,7 @@ hr {
     color: #616161;
     user-select: none;
 }
+
 /* Button */
 .statusBtn {
     margin: 1vh;
@@ -198,7 +229,7 @@ hr {
     border: none;
 }
 .browse:hover {
-    cursor: pointer;
     color: #808080;
+    cursor: pointer;
     text-decoration: underline;
 }
