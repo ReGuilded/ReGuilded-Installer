@@ -1,15 +1,34 @@
 // Node
 const { install, inject, uninject } = require("./actions");
-const { ipcRenderer } = require("electron");
 
 let textValue, onclickValue = null;
 
 // Variables
-let _debounce = false;
+let _progressDebounce = false;
+let _headerDebounce = false;
 let _interval;
 
+// Lang Strings
+let lang = {
+    uninject: {
+        progress: "Uninjecting"
+    },
+
+    install: {
+        progress: "Installing"
+    },
+
+    inject: {
+        progress: "Injecting"
+    },
+
+    update: {
+        progress: "Updating"
+    }
+}
+
 // Error Handler
-function handleError(buttonElement, error) {
+function handleError(error) {
     // Console the error (for debug).
     console.error(error);
 
@@ -34,87 +53,94 @@ function handleSuccess(element) {
 }
 
 // In Progress Handler
-function handleInProgress(element, task) {
+function handleInProgress(task) {
     // Setup Status Text to replace Install Button.
     statusText.innerText = task;
     itsWorking(statusText);
-    element.classList.add("hidden");
+
+    for (let button in buttonElements) {
+        button = buttonElements[button]
+        console.log(button);
+
+        if (!button.classList.contains("hidden"))
+            button.classList.add("hidden")
+    }
+
     statusText.classList.remove("hidden");
 }
 
-
-// Install Button handler.
-installBtn.addEventListener("click", async function(event) {
-    // Check Debounce.
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        textValue = versionText.innerText;
-        onclickValue = versionText.onclick;
-
-        // Call In Progress Handler.
-        handleInProgress(installBtn, "Installing ReGuilded");
-
-        install().then(() => {
-            // Setup Inject Button to replace Status Text.
-            handleSuccess(injectBtn);
-
-            // Send IPC for Computer Notification.
-            ipcRenderer.send("reguilded_setup", "finished_install");
-        }).catch((err) => { handleError(installBtn, err); })
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
-
-// Inject Button handler.
-injectBtn.addEventListener("click", async function(event) {
-    // Check Debounce
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        // Call In Progress Handler.
-        handleInProgress(injectBtn, "Injecting ReGuilded");
-
-        // Inject ReGuilded
-        inject().then(() => {
-            // Setup Uninject Button to replace Status Text.
-            handleSuccess(uninjectBtn);
-        }).catch((err) => { handleError(injectBtn, err); });
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
-
-uninjectBtn.addEventListener("click", async function(event) {
-    // Check Debounce
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        // Call In Progress Handler.
-        handleInProgress(uninjectBtn, "Uninjecting ReGuilded");
-
-        uninject().then(() => {
-            // Setup Uninject Button to replace Status Text.
-            handleSuccess(injectBtn);
-        }).catch((err) => { handleError(uninjectBtn, err); });
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
+// // Install Button handler.
+// installBtn.addEventListener("click", async function(event) {
+//     // Check Debounce.
+//     if (!_debounce) {
+//         // Set Debounce.
+//         _debounce = true;
+//
+//         textValue = versionText.innerText;
+//         onclickValue = versionText.onclick;
+//
+//         // Call In Progress Handler.
+//         handleInProgress(installBtn, "Installing ReGuilded");
+//
+//         install().then(() => {
+//             // Setup Inject Button to replace Status Text.
+//             handleSuccess(injectBtn);
+//
+//             // Send IPC for Computer Notification.
+//             ipcRenderer.send("reguilded_setup", "finished_install");
+//         }).catch((err) => { handleError(installBtn, err); })
+//
+//         // Debounce Over
+//         _debounce = false;
+//     }
+// });
+//
+// // Inject Button handler.
+// injectBtn.addEventListener("click", async function(event) {
+//     // Check Debounce
+//     if (!_debounce) {
+//         // Set Debounce.
+//         _debounce = true;
+//
+//         // Call In Progress Handler.
+//         handleInProgress(injectBtn, "Injecting ReGuilded");
+//
+//         // Inject ReGuilded
+//         inject().then(() => {
+//             // Setup Uninject Button to replace Status Text.
+//             handleSuccess(uninjectBtn);
+//         }).catch((err) => { handleError(injectBtn, err); });
+//
+//         // Debounce Over
+//         _debounce = false;
+//     }
+// });
+//
+// uninjectBtn.addEventListener("click", async function(event) {
+//     // Check Debounce
+//     if (!_debounce) {
+//         // Set Debounce.
+//         _debounce = true;
+//
+//         // Call In Progress Handler.
+//         handleInProgress(uninjectBtn, "Uninjecting ReGuilded");
+//
+//         uninject().then(() => {
+//             // Setup Uninject Button to replace Status Text.
+//             handleSuccess(injectBtn);
+//         }).catch((err) => { handleError(uninjectBtn, err); });
+//
+//         // Debounce Over
+//         _debounce = false;
+//     }
+// });
 
 // Minimize & Close controllers
 function onclickHeader(task) {
-    if (!_debounce) {
-        _debounce = true;
+    if (!_headerDebounce) {
+        _headerDebounce = true;
         ipcRenderer.send("reguilded_setup", task);
-        _debounce = false;
+        _headerDebounce = false;
     }
 }
 
@@ -135,5 +161,19 @@ async function onclickIssue(issue) {
             break;
         case "GITHUB_COMMUNICATION_ERROR":
             await shell.openExternal(`https://www.githubstatus.com/`);
+            break;
+    }
+}
+
+async function onclickButton(task) {
+    // Check Debounce
+    if (!_progressDebounce) {
+        // Set Debounce.
+        _progressDebounce = true;
+        const langStrings = lang[task];
+
+        // Call In Progress Handler.
+        handleInProgress(langStrings.progress + " ReGuilded")
+
     }
 }

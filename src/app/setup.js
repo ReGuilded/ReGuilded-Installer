@@ -1,21 +1,31 @@
-const { shell } = require("electron");
+const { ipcRenderer, shell } = require("electron");
 const appUtil = require("./util");
 const { access } = require("fs");
 
+// Nasty big variable initializer
+let splashDiv, mainDiv, versionText, statusText, buttonElements, platform = null;
+
 window.addEventListener('DOMContentLoaded', async () => {
-    // Elements
-    const splashDiv = document.getElementById("loadingSplash");
-    const versionText = document.getElementById("versionText");
-    const uninjectBtn = document.getElementById("uninjectBtn");
-    const installBtn = document.getElementById("installBtn");
-    const statusText = document.getElementById("statusText");
-    const updateBtn = document.getElementById("updateBtn");
-    const injectBtn = document.getElementById("injectBtn");
-    const mainDiv = document.getElementById("main");
+    // Div Elements
+    splashDiv = document.getElementById("loadingSplash");
+    mainDiv = document.getElementById("main");
+
+    // Text Elements
+    versionText = document.getElementById("versionText");
+    statusText = document.getElementById("statusText");
+
+    // Button Elements
+    buttonElements = {
+        uninject: document.getElementById("uninjectBtn"),
+        install: document.getElementById("installBtn"),
+        update: document.getElementById("updateBtn"),
+        inject: document.getElementById("injectBtn")
+    }
 
     function loadApp() {
         mainDiv.classList.remove("hidden");
         splashDiv.classList.add("hiding");
+
         setTimeout(() => {
             splashDiv.remove();
 
@@ -26,7 +36,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Get Platform Module.
-    const platform = appUtil.platform;
+    platform = appUtil.platform;
 
     // Handle if the users' platform is unsupported.
     if (!platform) {
@@ -51,18 +61,18 @@ window.addEventListener('DOMContentLoaded', async () => {
                 // Checks if ~/.reguilded exists, using fs.constants.F_OK (default).
                 access(platform.reguildedDir, async (err) => {
                     if (err) { // ReGuilded does not exist.
-                        installBtn.classList.remove("hidden");
+                        buttonElements.install.classList.remove("hidden");
                     } else { // Reguilded Exists
-                        updateBtn.classList.remove("hidden");
+                        buttonElements.update.classList.remove("hidden");
 
                         // Test if ReGuilded is Injected.
                         appUtil.isInjected(platform).then((isInjected) => {
                             if (!isInjected) {
                                 // ReGuilded is not Injected so reveal the Injected Button.
-                                injectBtn.classList.remove("hidden");
-                            } else if (isInjected) {
+                                buttonElements.inject.classList.remove("hidden");
+                            } else {
                                 // ReGuilded is already Injected so reveal the Uninject Button.
-                                uninjectBtn.classList.remove("hidden");
+                                buttonElements.uninject.classList.remove("hidden");
                             }
                         })
                     }
