@@ -11,19 +11,23 @@ let _interval;
 // Lang Strings
 let lang = {
     uninject: {
-        progress: "Uninjecting"
+        progress: "Uninjecting",
+        success: "uninjecting"
     },
 
     install: {
-        progress: "Installing"
+        progress: "Installing",
+        success: "installing"
     },
 
     inject: {
-        progress: "Injecting"
+        progress: "Injecting",
+        success: "injecting"
     },
 
     update: {
-        progress: "Updating"
+        progress: "Updating",
+        success: "updating"
     }
 }
 
@@ -35,21 +39,51 @@ function handleError(error) {
     // Stop the Status Text.
     clearInterval(_interval);
 
+    hideAllButtons();
+
     // Setup Error Status Text and replace Current Button.
     statusText.innerText = "There was an error.";
-    buttonElement.classList.add("hidden");
     statusText.classList.remove("hidden");
 }
 
 // Success Handler
-function handleSuccess(element) {
+function handleSuccess(buttons) {
     // Stop the Status Text.
     clearInterval(_interval);
 
-    // Remove Status Text content and replace it.
-    statusText.innerText = "";
+    hideAllButtons();
+    showButtons(buttons);
     statusText.classList.add("hidden");
-    element.classList.remove("hidden");
+}
+
+function showButtons(buttons) {
+    for (let button in buttons) {
+        button = buttons[button];
+
+        if (button.classList.contains("hidden"))
+            button.classList.remove("hidden");
+    }
+}
+
+function hideButtons(buttons) {
+    for (let button in buttons) {
+        button = buttons[button];
+
+        if (!button.classList.contains("hidden"))
+            button.classList.add("hidden");
+    }
+}
+
+// Easy Util to Hide All Buttons.
+function hideAllButtons() { hideButtons(buttonElements); }
+
+// Function for Status Text.
+function itsWorking(element) {
+    let origText = element.innerText;
+    _interval = setInterval(function() {
+        if (element.innerText === origText + "..." ) element.innerText = origText;
+        else element.innerText = element.innerText + ".";
+    }, 1000);
 }
 
 // In Progress Handler
@@ -58,13 +92,7 @@ function handleInProgress(task) {
     statusText.innerText = task;
     itsWorking(statusText);
 
-    for (let button in buttonElements) {
-        button = buttonElements[button]
-        console.log(button);
-
-        if (!button.classList.contains("hidden"))
-            button.classList.add("hidden")
-    }
+    hideButtons(buttonElements);
 
     statusText.classList.remove("hidden");
 }
@@ -139,18 +167,9 @@ function handleInProgress(task) {
 function onclickHeader(task) {
     if (!_headerDebounce) {
         _headerDebounce = true;
-        ipcRenderer.send("reguilded_setup", task);
+        ipcRenderer.send("REGUILDED_INSTALLER", [task, null]);
         _headerDebounce = false;
     }
-}
-
-// Function for Status Text.
-function itsWorking(element) {
-    let origText = element.innerText;
-    _interval = setInterval(function() {
-        if (element.innerText === origText + "..." ) element.innerText = origText;
-        else element.innerText = element.innerText + ".";
-    }, 1000);
 }
 
 // Handle New Issue click.
@@ -175,5 +194,13 @@ async function onclickButton(task) {
         // Call In Progress Handler.
         handleInProgress(langStrings.progress + " ReGuilded")
 
+        console.log(__dirname)
+
+        setTimeout(() => {
+            handleSuccess({inject: buttonElements.inject, uninject: buttonElements.uninject});
+            ipcRenderer.send("REGUILDED_INSTALLER", ["FINISHED_PROCESS", langStrings.success]);
+
+            _progressDebounce = false;
+        }, 2000)
     }
 }
