@@ -37,18 +37,16 @@ body {
     position: absolute;
     display: flex;
     justify-content: flex-end;
-    padding: 5px;
     width: 100%;
     height: 35px;
 }
-img {
+.headerBtn {
+    -webkit-app-region: no-drag;
     width: 15px;
     height: 15px;
-    z-index: 1;
-    margin: 10px 10px 0;
-    -webkit-app-region: no-drag;
+    margin: 10px;
 }
-img:hover {
+.headerBtn:hover {
     cursor: pointer;
 }
 
@@ -66,7 +64,7 @@ img:hover {
 
     transition: 200ms ease;
 
-    z-index: 2;
+    z-index: 3;
 }
 .loadingSplash.hiding {
     opacity: 0;
@@ -103,13 +101,9 @@ img:hover {
     height: auto;
 
     padding: 2rem;
-
+    z-index: 2;
     user-select: none;
-}
-.welcomePanel {
-    padding: 1rem;
-
-    user-select: none;
+    pointer-events: none;
 }
 .reguildedMark {
     color: var(--reguilded-theme);
@@ -177,6 +171,8 @@ hr {
     color: #616161;
     font-weight: bold;
     transition: 200ms ease;
+    text-decoration: none;
+    -webkit-app-region: no-drag;
 }
 #versionText:hover {
     text-decoration: underline;

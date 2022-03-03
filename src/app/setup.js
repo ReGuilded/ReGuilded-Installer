@@ -54,7 +54,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
                 loadApp();
             } else {
-                // TODO: Hover state doesn't work on the element?
                 versionText.innerText = release.versionString;
                 versionText.onclick = function() { shell.openExternal(release.browserUrl)};
 
