@@ -39,7 +39,7 @@ const platforms = {
         },
         get open() {
             return join(process.env.LOCALAPPDATA, "Programs/Guilded/Guilded.exe") + " >nul";
-        },
+        }
     }
 }
 
