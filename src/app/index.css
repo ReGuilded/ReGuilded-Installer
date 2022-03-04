@@ -126,7 +126,7 @@ hr {
     justify-content: center;
     text-align: center;
 
-    padding: 0 1rem 1rem;
+    padding: 1rem;
 
     -webkit-app-region: no-drag;
 }
