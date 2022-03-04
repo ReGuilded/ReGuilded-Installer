@@ -27,7 +27,8 @@ module.exports = () => {
 
         let command = ""
         if (["linux", "darwin"].includes(process.platform)) {
-            command = `mv -f ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} & ` +
+            command = `mkdir -p ${JSON.stringify(window.platform.reguildedDir)} && ` +
+                `mv -f ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} && ` +
                 `chmod -R 777 ${JSON.stringify(window.platform.reguildedDir)}`
         } else if (["win32"].includes(process.platform)) {
             command = `mkdir ${JSON.stringify(window.platform.reguildedDir)} 2>nul & ` +
