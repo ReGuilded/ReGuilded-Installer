@@ -36,7 +36,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Get Platform Module.
-    platform = appUtil.platform;
+    window.platform = appUtil.platform;
+    platform = window.platform;
 
     // Handle if the users' platform is unsupported.
     if (!platform) {
@@ -47,6 +48,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         loadApp();
     } else {
         appUtil.gitHandler().then((release) => {
+            window.gitRelease = release;
             if (release.versionString == null && release.downloadUrl == null) {
                 statusText.innerHTML = `There was an issue contacting GitHub.` +
                     "<br><button id='issueBtn' class='statusBtn' onclick='onclickIssue(\"GITHUB_COMMUNICATION_ERROR\")'>Check GitHub Status</button>"
@@ -65,7 +67,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                         buttonElements.update.classList.remove("hidden");
 
                         // Test if ReGuilded is Injected.
-                        appUtil.isInjected(platform).then((isInjected) => {
+                        appUtil.isInjected().then((isInjected) => {
                             if (!isInjected) {
                                 // ReGuilded is not Injected so reveal the Injected Button.
                                 buttonElements.inject.classList.remove("hidden");
