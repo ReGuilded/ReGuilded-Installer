@@ -5,7 +5,6 @@ let textValue, onclickValue = null;
 
 // Variables
 let _progressDebounce = false;
-let _headerDebounce = false;
 let _interval;
 
 // Lang Strings
@@ -42,7 +41,11 @@ function handleError(error) {
     hideAllButtons();
 
     // Setup Error Status Text and replace Current Button.
-    statusText.innerHTML = `An Error Occurred: <br /> ${error.name} <br /> CTRL/CMD + R to refresh.`;
+    statusText.innerHTML = `An Error Occurred:`+
+        `<br><br>` +
+        `${error.message}` +
+        `<br><br>` +
+        `CTRL/CMD + R to refresh.`;
     statusText.classList.remove("hidden");
 }
 
@@ -97,27 +100,6 @@ function handleInProgress(task) {
     statusText.classList.remove("hidden");
 }
 
-// Minimize & Close controllers
-function onclickHeader(task) {
-    if (!_headerDebounce) {
-        _headerDebounce = true;
-        ipcRenderer.send("REGUILDED_INSTALLER", [task, null]);
-        _headerDebounce = false;
-    }
-}
-
-// Handle New Issue click.
-async function onclickIssue(issue) {
-    switch (issue) {
-        case "UNSUPPORTED_PLATFORM":
-            await shell.openExternal(`https://github.com/ReGuilded/ReGuilded-Setup/issues/new?labels=Unsupported+Platform&body=Title+says+it+all.&title=Unsupported+Platform:+${process.platform}.`);
-            break;
-        case "GITHUB_COMMUNICATION_ERROR":
-            await shell.openExternal(`https://www.githubstatus.com/`);
-            break;
-    }
-}
-
 async function onclickButton(task) {
     // Check Debounce
     if (!_progressDebounce) {
@@ -128,7 +110,10 @@ async function onclickButton(task) {
         // Call In Progress Handler.
         handleInProgress(langStrings.progress + " ReGuilded")
 
-        actions[task]().then((buttonNames) => {
+        if (["uninject", "inject"].includes(task))
+            await exec(window.platform.close)
+
+        actions[task]().then(async (buttonNames) => {
             let buttons = {}
             buttonNames.forEach(buttonName => {
                buttons[buttonName] = buttonElements[buttonName]

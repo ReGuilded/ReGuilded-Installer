@@ -1,4 +1,5 @@
 const { ipcRenderer, shell } = require("electron");
+const { exec } = require("child_process");
 const appUtil = require("./util");
 const { access } = require("fs");
 
@@ -41,17 +42,21 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // Handle if the users' platform is unsupported.
     if (!platform) {
-        statusText.innerHTML = `Your platform, ${process.platform}, is unsupported.` +
-            "<br><button id='issueBtn' class='statusBtn' onclick='onclickIssue(\"UNSUPPORTED_PLATFORM\")'>Please submit a new issue.</button>"
+        statusText.innerHTML = `Your platform, ${process.platform}, is unsupported:` +
+            `<br><br>` +
+            `<span class='statusBtn' onclick='onclickIssue(\"UNSUPPORTED_PLATFORM\")'>Click here to submit a New Issue.</span>`
         statusText.classList.remove("hidden");
 
         loadApp();
     } else {
         appUtil.gitHandler().then((release) => {
             window.gitRelease = release;
-            if (release.versionString == null && release.downloadUrl == null) {
-                statusText.innerHTML = `There was an issue contacting GitHub.` +
-                    "<br><button id='issueBtn' class='statusBtn' onclick='onclickIssue(\"GITHUB_COMMUNICATION_ERROR\")'>Check GitHub Status</button>"
+            if (!release || release.versionString == null || release.downloadUrl == null) {
+                statusText.innerHTML = `Issue retrieving ReGuilded Release:` +
+                    `<br><br>` +
+                    `<span class='statusBtn' onclick='onclickIssue(\"GITHUB_RELEASES\")'>Click here to check ReGuilded Releases.</span>` +
+                    `<br>` +
+                    `<span class='statusBtn' onclick='onclickIssue(\"GITHUB_STATUS\")'>Click here to check GitHub Status.</span>`
                 statusText.classList.remove("hidden");
 
                 loadApp();
@@ -84,3 +89,28 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
     }
 });
+
+let _headerDebounce = false;
+// Minimize & Close controllers
+function onclickHeader(task) {
+    if (!_headerDebounce) {
+        _headerDebounce = true;
+        ipcRenderer.send("REGUILDED_INSTALLER", [task, null]);
+        _headerDebounce = false;
+    }
+}
+
+// Handle Issue click.
+async function onclickIssue(issue) {
+    switch (issue) {
+        case "UNSUPPORTED_PLATFORM":
+            await shell.openExternal(`https://github.com/ReGuilded/ReGuilded-Setup/issues/new?labels=Unsupported+Platform&body=Title+says+it+all.&title=Unsupported+Platform:+${process.platform}.`);
+            break;
+        case "GITHUB_RELEASES":
+            await shell.openExternal(`https://github.com/ReGuilded/ReGuilded/releases`);
+            break;
+        case "GITHUB_STATUS":
+            await shell.openExternal(`https://www.githubstatus.com/`);
+            break;
+    }
+}
