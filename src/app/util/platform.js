@@ -6,6 +6,7 @@ const platforms = {
         appName: "guilded",
         reguildedDir: "/usr/local/share/ReGuilded",
         resourcesDir: "/opt/Guilded/resources",
+        tempDir: "/tmp/",
         get appDir() {
             return join(this.resourcesDir, "app")
         },
@@ -18,6 +19,9 @@ const platforms = {
         appName: "Guilded",
         reguildedDir: "/Applications/ReGuilded",
         resourcesDir: "/Applications/Guilded.app/Contents/Resources",
+        get tempDir() {
+            return process.env.TMPDIR
+        },
         get appDir() {
             return join(this.resourcesDir, "app");
         },
@@ -33,6 +37,9 @@ const platforms = {
         },
         get resourcesDir() {
             return join(process.env.LOCALAPPDATA, "Programs/Guilded/resources");
+        },
+        get tempDir() {
+            return process.env.TEMP
         },
         get appDir() {
             return join(this.resourcesDir, "app");
