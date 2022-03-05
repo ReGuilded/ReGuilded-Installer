@@ -2,12 +2,46 @@ const { writeFile, access, mkdir } = require("fs");
 const { exec } = require("child_process");
 const { join, sep } = require("path");
 const sudo = require("sudo-prompt");
+const { isInjected } = require("../util");
 
 module.exports = () => {
     return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(["update", "uninject"]);
-        }, 2000)
+        access(window.platform.appDir, async (error) => {
+            if (error) {
+                process.noAsar = true
+                const reguildedAsarPath = join(window.platform.reguildedDir, "reguilded.asar").replace(RegExp(sep.repeat(2), "g"), "/");
+                const guildedMoveToPath = join(window.platform.resourcesDir, "_guilded");
+
+                // Handles Injection
+                // Elevate for Linux (if not root) and run Terminal Commands
+                // Or use FS for Windows & Mac
+                try {
+                    if (["linux"].includes(process.platform)) {
+                        const command = `mkdir ${JSON.stringify(window.platform.appDir)} && ` +
+                            `echo '{"name": "Guilded", "main": "index.js"}' | tee -a ${JSON.stringify(join(window.platform.appDir, "package.json"))} > /dev/null && ` +
+                            `echo 'require(${JSON.stringify(reguildedAsarPath)})' | tee -a ${JSON.stringify(join(window.platform.appDir, "index.js"))} > /dev/null && ` +
+                            `mkdir ${JSON.stringify(guildedMoveToPath)} && ` +
+                            `mv -f ${JSON.stringify(join(window.platform.resourcesDir, "app.asar"))} ${JSON.stringify(join(guildedMoveToPath, "app.asar"))} && ` +
+                            `mv -f ${JSON.stringify(join(window.platform.resourcesDir, "app.asar.unpacked"))} ${JSON.stringify(join(guildedMoveToPath, "app.asar.unpacked"))}`
+
+                        sudo.exec(command, {name: "ReGuilded Installer"}, async (err, stdout, stderr) => {
+                            if (err) reject(err);
+                            if (stderr) reject(stderr);
+
+                            // Even though this is still a return if inject is successful,
+                            // a double check to make sure that ReGuilded is indeed injected.
+                            resolve(["update", await isInjected() ? "uninject" : "inject"]);
+                        });
+                    } else {
+                        await new Promise((guildedMoveResolve) => {
+
+                        })
+                    }
+                } catch (err) {
+                    reject(err);
+                }
+            } else reject(new Error("ReGuilded is already injected."))
+        });
     });
 }
 
