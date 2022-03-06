@@ -106,3 +106,4 @@ dist
 #Custom
 .idea/
 .dist/
+package-lock.json
