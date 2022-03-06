@@ -1,5 +1,5 @@
 // Custom Modules
-const { isInjected } = require("../util")
+const { isInjected } = require("../util");
 
 // NPM Modules
 const { createWriteStream } = require("fs-extra");

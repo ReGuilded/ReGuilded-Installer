@@ -1,5 +1,8 @@
-const { writeFile, access, mkdir, rename } = require("fs");
+// Custom Modules
 const { isInjected } = require("../util");
+
+// NPM Modules
+const { writeFile, access, mkdir, rename } = require("fs");
 const { join, sep } = require("path");
 const sudo = require("sudo-prompt");
 
