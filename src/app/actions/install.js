@@ -13,7 +13,7 @@ module.exports = () => {
         const downloadUrl = window.gitRelease.downloadUrl
         const downloadPath = join(window.platform.tempDir, "reguilded.asar");
 
-        await new Promise((downloadResolve) => {
+        new Promise((downloadResolve) => {
             try {
                 stream(downloadUrl)
                     .pipe(createWriteStream(downloadPath))
@@ -23,29 +23,29 @@ module.exports = () => {
             } catch (err) {
                 reject(err);
             }
-        });
+        }).then(() => {
+            let command = ""
+            if (["linux", "darwin"].includes(process.platform)) {
+                command = `mkdir -p ${JSON.stringify(window.platform.reguildedDir)} && ` +
+                    `mv -f ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} && ` +
+                    `chmod -R 777 ${JSON.stringify(window.platform.reguildedDir)}`
+            } else if (["win32"].includes(process.platform)) {
+                command = `mkdir ${JSON.stringify(window.platform.reguildedDir)} 2>nul & ` +
+                    `move /Y ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} & ` +
+                    `icacls ${JSON.stringify(window.platform.reguildedDir)} /grant "Authenticated Users":(OI)(CI)F`
+            }
 
-        let command = ""
-        if (["linux", "darwin"].includes(process.platform)) {
-            command = `mkdir -p ${JSON.stringify(window.platform.reguildedDir)} && ` +
-                `mv -f ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} && ` +
-                `chmod -R 777 ${JSON.stringify(window.platform.reguildedDir)}`
-        } else if (["win32"].includes(process.platform)) {
-            command = `mkdir ${JSON.stringify(window.platform.reguildedDir)} 2>nul & ` +
-                `move /Y ${JSON.stringify(downloadPath)} ${JSON.stringify(join(window.platform.reguildedDir, "reguilded.asar"))} & ` +
-                `icacls ${JSON.stringify(window.platform.reguildedDir)} /grant "Authenticated Users":(OI)(CI)F`
-        }
+            new Promise((moveResolve) => {
+                sudo.exec(command, {name: "ReGuilded Installer"}, (err, stdout, stderr) => {
+                    if (err) { reject(err); return; }
+                    if (stderr) { reject(err); return; }
 
-        await new Promise((moveResolve) => {
-            sudo.exec(command, {name: "ReGuilded Installer"}, (err, stdout, stderr) => {
-                if (err) reject(err);
-                if (stderr) console.log(stderr);
-
-                moveResolve();
+                    moveResolve();
+                });
+            }).then( async() => {
+                process.noAsar = false;
+                resolve(["update", await isInjected() ? "uninject" : "inject"]);
             });
         });
-
-        process.noAsar = false;
-        resolve(["update", await isInjected() ? "uninject" : "inject"]);
     });
 }

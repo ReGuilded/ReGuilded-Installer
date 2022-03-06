@@ -14,10 +14,10 @@ module.exports = () => {
                 const reguildedAsarPath = join(window.platform.reguildedDir, "reguilded.asar").replace(RegExp(sep.repeat(2), "g"), "/");
                 const guildedMoveToPath = join(window.platform.resourcesDir, "_guilded");
 
-                // Handles Injection
-                // Elevate for Linux (if not root) and run Terminal Commands
-                // Or use FS for Windows & Mac
-                try {
+                new Promise((injectResolve) => {
+                    // Handles Injection
+                    // Elevate for Linux (if not root) and run Terminal Commands
+                    // Or use FS for Windows & Mac
                     if (["linux"].includes(process.platform)) {
                         const command = `mkdir ${JSON.stringify(window.platform.appDir)} && ` +
                             `echo '{"name": "Guilded", "main": "index.js"}' | tee -a ${JSON.stringify(join(window.platform.appDir, "package.json"))} > /dev/null && ` +
@@ -30,50 +30,48 @@ module.exports = () => {
                             if (err) { reject(err); return; }
                             if (stderr) { reject(stderr); return; }
 
-                            // Even though this is still a return if inject is successful,
-                            // a double check to make sure that ReGuilded is indeed injected.
-                            resolve(["update", await isInjected() ? "uninject" : "inject"]);
+                            injectResolve();
                         });
-                    } else {
-                        await new Promise((reguildedAppDirResolve) => {
-                            mkdir(window.platform.appDir, (mkDirErr) => {
-                                if (mkDirErr) { reject(mkDirErr);  return; }
+                    } else if (["win32", "darwin"].includes(process.platform)) {
+                        Promise.all([
+                            new Promise((reguildedAppDirResolve) => {
+                                mkdir(window.platform.appDir, (mkDirErr) => {
+                                    if (mkDirErr) { reject(mkDirErr);  return; }
 
-                                writeFile(join(window.platform.appDir, "index.js"), `require(${JSON.stringify(reguildedAsarPath)});`, (jsWriteErr) => {
-                                    if (jsWriteErr) { reject(jsWriteErr); return; }
+                                    writeFile(join(window.platform.appDir, "index.js"), `require(${JSON.stringify(reguildedAsarPath)});`, (jsWriteErr) => {
+                                        if (jsWriteErr) { reject(jsWriteErr); return; }
 
-                                    writeFile(join(window.platform.appDir, "package.json"), JSON.stringify({ name: "Guilded", main: "index.js" }), (jsonWriteErr) => {
-                                        if (jsonWriteErr) { reject(jsonWriteErr); return; }
+                                        writeFile(join(window.platform.appDir, "package.json"), JSON.stringify({ name: "Guilded", main: "index.js" }), (jsonWriteErr) => {
+                                            if (jsonWriteErr) { reject(jsonWriteErr); return; }
 
-                                        reguildedAppDirResolve();
+                                            reguildedAppDirResolve();
+                                        });
                                     });
                                 });
-                            });
-                        });
+                            }),
 
-                        await new Promise((guildedMoveResolve) => {
-                            mkdir(guildedMoveToPath, (mkDirErr) => {
-                                if (mkDirErr) { reject(mkDirErr); return; }
+                            new Promise((guildedMoveResolve) => {
+                                mkdir(guildedMoveToPath, (mkDirErr) => {
+                                    if (mkDirErr) { reject(mkDirErr); return; }
 
-                                rename(join(window.platform.resourcesDir, "app.asar"), join(guildedMoveToPath, "app.asar"), (asarRenameErr) => {
-                                    if (asarRenameErr) { reject(asarRenameErr); return; }
+                                    rename(join(window.platform.resourcesDir, "app.asar"), join(guildedMoveToPath, "app.asar"), (asarRenameErr) => {
+                                        if (asarRenameErr) { reject(asarRenameErr); return; }
 
-                                    rename(join(window.platform.resourcesDir, "app.asar.unpacked"), join(guildedMoveToPath, "app.asar.unpacked"), (asarUnpackedRenameErr) => {
-                                        if (asarUnpackedRenameErr) { reject(asarUnpackedRenameErr); return; }
+                                        rename(join(window.platform.resourcesDir, "app.asar.unpacked"), join(guildedMoveToPath, "app.asar.unpacked"), (asarUnpackedRenameErr) => {
+                                            if (asarUnpackedRenameErr) { reject(asarUnpackedRenameErr); return; }
 
-                                        guildedMoveResolve();
+                                            guildedMoveResolve();
+                                        });
                                     });
                                 });
-                            });
-                        });
-
-                        // Even though this is still a return if inject is successful,
-                        // a double check to make sure that ReGuilded is indeed injected.
-                        resolve(["update", await isInjected() ? "uninject" : "inject"]);
+                            })
+                        ]).then(() => injectResolve());
                     }
-                } catch (err) {
-                    reject(err);
-                }
+                }).then(async () => {
+                    // Even though this is still a return if inject is successful,
+                    // a double check to make sure that ReGuilded is indeed injected.
+                    resolve(["update", await isInjected() ? "uninject" : "inject"]);
+                });
             } else reject(new Error("ReGuilded is already injected."))
         });
     });
