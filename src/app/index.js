@@ -100,6 +100,28 @@ function handleInProgress(task) {
     statusText.classList.remove("hidden");
 }
 
+/**
+ * Function used from StackOverflow Answer
+ * https://stackoverflow.com/a/47996795/14981012
+ *
+ * Some modifications made, not many.
+ */
+function isRunning() {
+    const query = window.platform.appName;
+
+    return new Promise(function(resolve){
+        const plat = process.platform
+        const cmd = plat === 'win32' ? 'tasklist' : (plat === 'darwin' ? 'ps -ax | grep ' + query : (plat === 'linux' ? 'ps -A' : ''))
+        const proc = plat === 'win32' ? query : (plat === 'darwin' ? query : (plat === 'linux' ? query : ''))
+        if (cmd === '' || proc === ''){
+            resolve(false)
+        }
+        exec(cmd, function(err, stdout, stderr) {
+            resolve(stdout.toLowerCase().indexOf(proc.toLowerCase()) > -1)
+        })
+    })
+}
+
 async function onclickButton(task) {
     // Check Debounce
     if (!_progressDebounce) {
@@ -110,18 +132,31 @@ async function onclickButton(task) {
         // Call In Progress Handler.
         handleInProgress(langStrings.progress + " ReGuilded")
 
-        if (["uninject", "inject"].includes(task))
-            await exec(window.platform.close)
+        new Promise((resolve) => {
+            if (["uninject", "inject"].includes(task)) {
+                exec(window.platform.close)
 
-        actions[task]().then(async (buttonNames) => {
-            let buttons = {}
-            buttonNames.forEach(buttonName => {
-               buttons[buttonName] = buttonElements[buttonName]
-            });
+                const interval = setInterval(() => {
+                    isRunning().then((isGuildedRunning) => {
+                        if (!isGuildedRunning) {
+                            clearInterval(interval);
 
-            handleSuccess(buttons)
-            ipcRenderer.send("REGUILDED_INSTALLER", ["FINISHED_PROCESS", langStrings.success]);
-        }).catch(handleError)
+                            resolve();
+                        }
+                    })
+                }, 250);
+            } else resolve();
+        }).then(() => {
+            actions[task]().then(async (buttonNames) => {
+                let buttons = {}
+                buttonNames.forEach(buttonName => {
+                    buttons[buttonName] = buttonElements[buttonName]
+                });
+
+                handleSuccess(buttons)
+                ipcRenderer.send("REGUILDED_INSTALLER", ["FINISHED_PROCESS", langStrings.success]);
+            }).catch(handleError)
+        });
 
         _progressDebounce = false;
     }
