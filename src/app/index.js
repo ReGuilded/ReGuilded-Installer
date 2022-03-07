@@ -1,130 +1,84 @@
 // Node
-const { ipcRenderer, shell } = require("electron");
-const { install, inject, uninject } = require("./actions");
-const gitHandler = require("./util").gitHandler;
-
-// Elements
-const statusText = document.getElementById("statusText");
-const versionText = document.getElementById("versionText");
-const installBtn = document.getElementById("installBtn");
-const injectBtn = document.getElementById("injectBtn");
-const uninjectBtn = document.getElementById("uninjectBtn");
+const actions = require("./actions");
 
 let textValue, onclickValue = null;
 
 // Variables
-let _debounce = false;
+let _progressDebounce = false;
 let _interval;
 
+// Lang Strings
+let lang = {
+    uninject: {
+        progress: "Uninjecting",
+        success: "uninjecting"
+    },
+
+    install: {
+        progress: "Installing",
+        success: "installing"
+    },
+
+    inject: {
+        progress: "Injecting",
+        success: "injecting"
+    },
+
+    update: {
+        progress: "Updating",
+        success: "updating"
+    }
+}
+
 // Error Handler
-function handleError(buttonElement, error) {
+function handleError(error) {
     // Console the error (for debug).
     console.error(error);
 
     // Stop the Status Text.
     clearInterval(_interval);
 
+    hideAllButtons();
+
     // Setup Error Status Text and replace Current Button.
-    statusText.innerText = "There was an error.";
-    buttonElement.classList.add("hidden");
+    statusText.innerHTML = `An Error Occurred:`+
+        `<br><br>` +
+        `${error.message}` +
+        `<br><br>` +
+        `CTRL/CMD + R to refresh.`;
     statusText.classList.remove("hidden");
 }
 
 // Success Handler
-function handleSuccess(element) {
+function handleSuccess(buttons) {
     // Stop the Status Text.
     clearInterval(_interval);
 
-    // Remove Status Text content and replace it.
-    statusText.innerText = "";
+    hideAllButtons();
+    showButtons(buttons);
     statusText.classList.add("hidden");
-    element.classList.remove("hidden");
 }
 
-// In Progress Handler
-function handleInProgress(element, task) {
-    // Setup Status Text to replace Install Button.
-    statusText.innerText = task;
-    itsWorking(statusText);
-    element.classList.add("hidden");
-    statusText.classList.remove("hidden");
-}
+function showButtons(buttons) {
+    for (let button in buttons) {
+        button = buttons[button];
 
-
-// Install Button handler.
-installBtn.addEventListener("click", async function(event) {
-    // Check Debounce.
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        textValue = versionText.innerText;
-        onclickValue = versionText.onclick;
-
-        // Call In Progress Handler.
-        handleInProgress(installBtn, "Installing ReGuilded");
-
-        install(event.shiftKey).then(() => {
-            // Setup Inject Button to replace Status Text.
-            handleSuccess(injectBtn);
-
-            // Send IPC for Computer Notification.
-            ipcRenderer.send("reguilded_setup", "finished_install");
-        }).catch((err) => { handleError(installBtn, err); })
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
-
-// Inject Button handler.
-injectBtn.addEventListener("click", async function(event) {
-    // Check Debounce
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        // Call In Progress Handler.
-        handleInProgress(injectBtn, "Injecting ReGuilded");
-
-        // Inject ReGuilded
-        inject().then(() => {
-            // Setup Uninject Button to replace Status Text.
-            handleSuccess(uninjectBtn);
-        }).catch((err) => { handleError(injectBtn, err); });
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
-
-uninjectBtn.addEventListener("click", async function(event) {
-    // Check Debounce
-    if (!_debounce) {
-        // Set Debounce.
-        _debounce = true;
-
-        // Call In Progress Handler.
-        handleInProgress(uninjectBtn, "Uninjecting ReGuilded");
-
-        uninject().then(() => {
-            // Setup Uninject Button to replace Status Text.
-            handleSuccess(injectBtn);
-        }).catch((err) => { handleError(uninjectBtn, err); });
-
-        // Debounce Over
-        _debounce = false;
-    }
-});
-
-// Minimize & Close controllers
-function onclickHeader(task) {
-    if (!_debounce) {
-        _debounce = true;
-        ipcRenderer.send("reguilded_setup", task);
-        _debounce = false;
+        if (button.classList.contains("hidden"))
+            button.classList.remove("hidden");
     }
 }
+
+function hideButtons(buttons) {
+    for (let button in buttons) {
+        button = buttons[button];
+
+        if (!button.classList.contains("hidden"))
+            button.classList.add("hidden");
+    }
+}
+
+// Easy Util to Hide All Buttons.
+function hideAllButtons() { hideButtons(buttonElements); }
 
 // Function for Status Text.
 function itsWorking(element) {
@@ -135,42 +89,78 @@ function itsWorking(element) {
     }, 1000);
 }
 
-// Handle New Issue click.
-async function onclickIssue(issue) {
-    switch (issue) {
-        case "UNSUPPORTED_PLATFORM":
-            await shell.openExternal(`https://github.com/ReGuilded/ReGuilded-Setup/issues/new?labels=Unsupported+Platform&body=Title+says+it+all.&title=Unsupported+Platform:+${process.platform}.`);
-            break;
-        case "GITHUB_COMMUNICATION_ERROR":
-            await shell.openExternal(`https://www.githubstatus.com/`);
-    }
+// In Progress Handler
+function handleInProgress(task) {
+    // Setup Status Text to replace Install Button.
+    statusText.innerText = task;
+    itsWorking(statusText);
+
+    hideButtons(buttonElements);
+
+    statusText.classList.remove("hidden");
 }
 
-let keyPressDebounce = false;
+/**
+ * Function used from StackOverflow Answer
+ * https://stackoverflow.com/a/47996795/14981012
+ *
+ * Some modifications made, not many.
+ */
+function isRunning() {
+    const query = window.platform.appName;
 
-// When shift is pressed, change text of install button to Install (Dev).
-document.addEventListener("keydown", function(event) {
-    if (event.key === "Shift" && !installBtn.classList.contains("hidden") && !keyPressDebounce) {
-        keyPressDebounce = true;
-        installBtn.innerText = "📥 Install (Dev)"
-
-        if (textValue == null && onclickValue == null) {
-            versionText.innerText = "Commit " + gitHandler.latestCommit.commit.sha.substring(0, 7) + " (Dev)";
-            versionText.onclick = function() { shell.openExternal(gitHandler.latestCommit.commit.html_url.replace("commit", "tree")) }
+    return new Promise(function(resolve){
+        const plat = process.platform
+        const cmd = plat === 'win32' ? 'tasklist' : (plat === 'darwin' ? 'ps -ax | grep ' + query : (plat === 'linux' ? 'ps -A' : ''))
+        const proc = plat === 'win32' ? query : (plat === 'darwin' ? query : (plat === 'linux' ? query : ''))
+        if (cmd === '' || proc === ''){
+            resolve(false)
         }
-    }
-});
+        exec(cmd, function(err, stdout, stderr) {
+            resolve(stdout.toLowerCase().indexOf(proc.toLowerCase()) > -1)
+        })
+    })
+}
 
-// When shift is no longer pressed, change text of install button to just Install.
-document.addEventListener("keyup", function(event) {
-    if (event.key === "Shift" && !installBtn.classList.contains("hidden")) {
-        keyPressDebounce = false;
-        installBtn.innerText = "📥 Install"
+async function onclickButton(task) {
+    // Check Debounce
+    if (!_progressDebounce) {
+        // Set Debounce.
+        _progressDebounce = true;
+        const langStrings = lang[task];
 
-        if (textValue == null && onclickValue == null) {
-            let re = new RegExp(":(.*)");
-            versionText.innerText = "v" + gitHandler.latestRelease.release.name.replace(re, "");
-            versionText.onclick = function() { shell.openExternal(gitHandler.latestRelease.release.html_url) };
-        }
+        // Call In Progress Handler.
+        handleInProgress(langStrings.progress + " ReGuilded")
+
+        new Promise((resolve) => {
+            if (["uninject", "inject"].includes(task)) {
+                exec(window.platform.close)
+
+                const interval = setInterval(() => {
+                    isRunning().then((isGuildedRunning) => {
+                        if (!isGuildedRunning) {
+                            clearInterval(interval);
+
+                            resolve();
+                        }
+                    })
+                }, 250);
+            } else resolve();
+        }).then(() => {
+            actions[task]().then(async (buttonNames) => {
+                let buttons = {}
+                buttonNames.forEach(buttonName => {
+                    buttons[buttonName] = buttonElements[buttonName]
+                });
+
+                handleSuccess(buttons)
+                ipcRenderer.send("REGUILDED_INSTALLER", ["FINISHED_PROCESS", langStrings.success]);
+
+                if (["uninject", "inject"].includes(task) && !await isRunning())
+                    exec(window.platform.open)
+            }).catch(handleError)
+        });
+
+        _progressDebounce = false;
     }
-});
+}

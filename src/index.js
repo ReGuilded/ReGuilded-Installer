@@ -13,16 +13,15 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-            contextIsolation: false,
-            preload: join(__dirname, "preload.js")
+            contextIsolation: false
         }
     })
 
     injectWindow.loadFile(join(__dirname, "app/index.html"));
 
-    ipcMain.on("reguilded_setup", (event, arg) => {
-        if (["minimize", "close"].includes(arg)) injectWindow[arg]();
-        else if (arg === "finished_install") new Notification({title: "ReGuilded Setup", body: "ReGuilded has finished installing!", icon: iconPath}).show();
+    ipcMain.on("REGUILDED_INSTALLER", (event, [task, arg]) => {
+        if (["minimize", "close"].includes(task)) injectWindow[task]();
+        else if (task === "FINISHED_PROCESS") new Notification({title: "ReGuilded Installer", body: `ReGuilded has finished ${arg}!`, icon: iconPath}).show();
     });
 }
 
@@ -33,7 +32,7 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
 
-    if (process.platform === 'win32') app.setAppUserModelId("ReGuilded Setup");
+    if (process.platform === 'win32') app.setAppUserModelId("ReGuilded Installer");
 });
 
 app.on("window-all-closed", function() {

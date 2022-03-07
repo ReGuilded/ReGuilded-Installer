@@ -1,5 +1,6 @@
 module.exports = {
+    uninject: require("./uninject"),
     install: require("./install"),
     inject: require("./inject"),
-    uninject: require("./uninject")
+    update: require("./update")
 }
