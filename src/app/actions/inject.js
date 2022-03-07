@@ -65,11 +65,11 @@ module.exports = () => {
                                     });
                                 });
                             })
-                        ]).then(() => injectResolve());
+                        ]).then(injectResolve);
                     }
                 }).then(async () => {
-                    // Even though this is still a return if inject is successful,
-                    // a double check to make sure that ReGuilded is indeed injected.
+                    // Even though Inject should be successful at this point
+                    // double check to make sure, before displaying options back to the user.
                     resolve(["update", await isInjected() ? "uninject" : "inject"]);
                 });
             } else reject(new Error("ReGuilded is already injected."))
