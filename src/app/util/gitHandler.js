@@ -1,6 +1,6 @@
 module.exports = () => {
     return new Promise((resolve) => {
-        fetch("https://api.github.com/repos/ItzNxthaniel/ReGuilded/releases/latest").then((response) => {
+        fetch("https://api.github.com/repos/ReGuilded/ReGuilded/releases/latest").then((response) => {
             if (response.ok) {
                 response.json().then((json) => {
                     if (json.assets.length !== 0) {
