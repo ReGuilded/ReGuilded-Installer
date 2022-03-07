@@ -155,6 +155,9 @@ async function onclickButton(task) {
 
                 handleSuccess(buttons)
                 ipcRenderer.send("REGUILDED_INSTALLER", ["FINISHED_PROCESS", langStrings.success]);
+
+                if (["uninject", "inject"].includes(task) && !await isRunning())
+                    exec(window.platform.open)
             }).catch(handleError)
         });
 
