@@ -13,7 +13,9 @@
 ## Executables
 You can download executables on the [ReGuilded Website](https://reguilded.dev/downloads) or the [Releases Page](https://github.com/ReGuilded/ReGuilded/releases)
 
-## Testing/Development Builds
+## Contributing
+Pull requests and Issues are welcome. You may want to coordinate with us on our [Guilded Server](https://guilded.gg/ReGuilded) in advance.
+
 Currently, to test the setup you have to run `npm install` then `npm run app` this will open the electron app. 
 Everything should be logged if there are any errors.
 
