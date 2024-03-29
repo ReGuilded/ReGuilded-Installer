@@ -1,0 +1,17 @@
+[package]
+authors = ["Nathaniel M. <me@itznxthaniel.dev>", "The ReGuilded Team"]
+name = "reguilded-installer"
+description = "Your one-stop application to Install/Uninstall, Inject/Uninject, and Update ReGuilded."
+license-file = "LICENSE"
+readme = "README.md"
+version = "1.0.0-alpha"
+edition = "2021"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+slint = "1.4"
+
+[build-dependencies]
+slint-build = "1.4"
