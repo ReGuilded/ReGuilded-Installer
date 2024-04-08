@@ -1,0 +1,28 @@
+footer {
+    justify-content: center;
+    text-align: center;
+}
+
+section {
+    align-items: center;
+    justify-content: center;
+}
+
+section > img {
+    width: 160px;
+    height: 215px;
+}
+
+section > p {
+    height: 20px;
+    text-overflow: fade;
+
+    font-weight: bold;
+    font-style: italic;
+
+    background-image: linear-gradient(to right, var(--reguildedRed), var(--reguildedRedHover));
+    color: transparent;
+    background-clip: text;
+
+    text-shadow: var(--reguildedRed) 0px 0px 30px ;
+}

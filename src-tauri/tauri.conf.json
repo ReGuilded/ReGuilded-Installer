@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "reguilded-installer",
-    "version": "0.1.0"
+    "version": "1.0.0-alpha"
   },
   "tauri": {
     "allowlist": {
@@ -56,6 +56,8 @@
     "windows": [
       {
         "title": "ReGuilded Installer",
+        "label": "preface",
+        "url": "preface.html",
         "minHeight": 495,
         "height": 495,
         "minWidth": 880,
@@ -63,7 +65,20 @@
 
         "center": true,
         "fullscreen": false,
-        "resizable": true
+        "resizable": true,
+        "visible": false,
+        "focus": true
+      },
+      {
+        "title": "ReGuilded Installer • Splashscreen",
+        "label": "splashscreen",
+        "url": "splashscreen.html",
+        "height": 430,
+        "width": 320,
+
+        "center": true,
+        "resizable": false,
+        "decorations": false
       }
     ]
   }

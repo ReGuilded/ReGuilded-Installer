@@ -6,6 +6,7 @@
     --grayText: rgba(255, 255, 255, 0.5);
     --textColor: #ffffff;
     --reguildedRed: #F56565;
+    --reguildedRedHover: #F23737;
 
     --paddingSm: 5px;
     --padding: 10px;
@@ -93,10 +94,6 @@ footer {
 }
 
 footer > p {
-    /*position: absolute;*/
-    /*bottom: 0;*/
-    /*margin-bottom: var(--paddingSm);*/
-
     color: var(--grayText);
     font-style: italic;
     font-size: small;
