@@ -1,0 +1,22 @@
+section > p {
+    margin-bottom: var(--paddingSm);
+    font-weight: bold;
+}
+
+section > div {
+    overflow-y: auto;
+    height: 1px;
+}
+
+footer > button {
+    height: 45px;
+    width: 65px;
+    border-radius: var(--buttonBorder);
+    border: none;
+
+
+    color: white;
+    font-weight: bolder;
+    background-color: var(--reguildedRed);
+    box-shadow: var(--reguildedRed) 0px 0px 30px;
+}

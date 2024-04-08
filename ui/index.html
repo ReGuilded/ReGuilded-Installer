@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReGuilded Installer</title>
+    <link rel="stylesheet" href="./styles/globals.css">
+    <link rel="stylesheet" href="./styles/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+    <body>
+        <main>
+            <nav class="container">
+                <img alt="ReGuilded Logo" src="./data/icon.svg" width="40" height="40">
+                <p>ReGuilded • Installer</p>
+            </nav>
+
+            <section>
+                <p>Preface</p>
+                <div class="container">
+                    <p>
+                        You despise legal jargon? Hey, we're on the same page! Let's breeze through this lightning fast. ⚡<br /><br />
+
+                        • ReGuilded is not affiliated or endorsed by Guilded, Inc.<br /><br />
+
+                        • So, ReGuilded might rub Guilded's TOS the wrong way, but fear not! We've got the green light from Guilded to develop and use it, as long as you're not up to no good.<br /><br />
+
+                        • Can't vouch for the safety of any add-ons not from our marketplace. Those are the wild west. Stick to our turf for a safer ride.<br /><br />
+
+                        • This installer? Wide open source. Feeling skeptical? Go ahead, take a peek! [source: github]<br /><br />
+
+                        • Your Guilded account gets into a tiff while using ReGuilded? Hey, we're innocent bystanders. Use it wisely, or you're on your own.<br /><br />
+
+                        • ReGuilded includes a handy ReGuilded header on your Guilded client. It's there to help Guilded pinpoint any ReGuilded-related bugs. But don't worry, we're not peeking at your data.<br /><br />
+
+                        Glad we could zip through that! 😄 Now, hit that "Begin" button and let's dive into the good stuff! 🚀
+
+                    </p>
+                </div>
+            </section>
+
+            <footer class="container">
+                <script>
+                    const { invoke } = window.__TAURI__.tauri
+
+                    invoke("get_installer_version").then((response) => {
+                        window.installerVersion.innerText = `${response} • © 2021 - ${new Date(Date.now()).getFullYear()} ReGuilded. All rights reserved`;
+                    })
+                </script>
+
+                <p id="installerVersion">v1.0.0-alpha • © 2021-2024 ReGuilded. All rights reserved</p>
+
+                <button>Begin</button>
+            </footer>
+        </main>
+    </body>
+</html>
