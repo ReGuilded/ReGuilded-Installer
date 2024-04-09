@@ -1,0 +1,43 @@
+section > div.screen {
+    background-color: transparent;
+}
+
+#errorScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#errorScreen > i {
+    font-size: 5em;
+}
+
+#errorScreen > p {
+    margin: var(--padding);
+    font-size: large;
+    text-align: center;
+}
+
+.clickableText {
+    color: var(--reguildedRed);
+    font-style: italic;
+    /*text-decoration: underline;*/
+    /*text-underline: var(--reguildedRed);*/
+
+    transition: color 200ms;
+}
+
+.clickableText:hover {
+    cursor: pointer;
+    color: var(--reguildedRedHover);
+    /*text-underline: var(--reguildedRedHover);*/
+}
+
+.clickableText:visited {
+    color: inherit;
+}
+
+section > div.screen.hidden {
+    display: none !important;
+}

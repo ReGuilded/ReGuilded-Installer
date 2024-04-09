@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ReGuilded Installer</title>
+        <link rel="stylesheet" href="./styles/globals.css">
+        <link rel="stylesheet" href="./styles/main.css">
+        <script src="https://kit.fontawesome.com/d87bfdb7c7.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <main>
+            <nav id="nav" class="container">
+                <img alt="ReGuilded Logo" src="./data/icon.svg" width="40" height="40">
+                <p>ReGuilded • Installer</p>
+            </nav>
+
+            <section class="container">
+                <div id="errorScreen" class="screen hidden">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <p id="errorScreenText">
+                        Uh Oh! Unable to find a ReGuilded Install.<br />
+                        You can <a id="newInstallText" class="clickableText">create a new installation</a> or if you<br />
+                        already have one, you can <a id="locateInstallText" class="clickableText">locate it</a>.
+                    </p>
+                </div>
+
+                <div id="newInstallScreen" class="screen hidden">
+
+                </div>
+
+                <div id="processingScreen" class="screen hidden">
+
+                </div>
+
+                <div id="utilScreen" class="screen hidden">
+                    <p>Hi there!</p>
+                </div>
+
+            </section>
+
+            <footer>
+                <p id="installerVersion">v1.0.0-alpha • © 2021-LOAD ReGuilded. All rights reserved</p>
+            </footer>
+        </main>
+    </body>
+
+    <script src="./scripts/globals.js"></script>
+    <script src="./scripts/main.js"></script>
+</html>

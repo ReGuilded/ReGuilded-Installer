@@ -7,25 +7,3 @@ section > div {
     overflow-y: auto;
     height: 1px;
 }
-
-footer > button {
-    height: 45px;
-    width: 65px;
-    border-radius: var(--buttonBorder);
-    border: none;
-
-
-    color: white;
-    font-weight: bolder;
-    background-color: var(--reguildedRed);
-    box-shadow: var(--reguildedRed) 0px 0px 30px;
-
-    transition: all 200ms;
-}
-
-footer > button:hover {
-    cursor: pointer;
-
-    background-color: var(--reguildedRedHover);
-    box-shadow: var(--reguildedRedHover) 0px 0px 30px;
-}

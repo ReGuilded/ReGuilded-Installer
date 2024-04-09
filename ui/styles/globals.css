@@ -41,6 +41,7 @@ p {
 
 .container {
     border-radius: var(--containerBorder);
+    background-color: var(--containerBackground);
 }
 
 main {
@@ -53,8 +54,6 @@ main {
 }
 
 nav {
-    background-color: var(--containerBackground);
-
     display: flex;
     align-items: center;
     padding-left: var(--paddingSm);
@@ -68,16 +67,15 @@ nav > p {
 
 section {
     flex-grow: 1;
-    padding: var(--padding);
 
     display: flex;
     flex-direction: column;
 }
 
 section > div {
-    background-color: var(--containerBackground);
-    padding: var(--padding);
     flex-grow: 1;
+    padding: var(--padding);
+    background-color: var(--containerBackground);
 }
 
 
@@ -97,4 +95,30 @@ footer > p {
     color: var(--grayText);
     font-style: italic;
     font-size: small;
+}
+
+footer > button {
+    height: 45px;
+    width: 65px;
+    border-radius: var(--buttonBorder);
+    border: none;
+
+
+    color: white;
+    font-weight: bolder;
+    background-color: var(--reguildedRed);
+    box-shadow: var(--reguildedRed) 0px 0px 30px;
+
+    transition: all 200ms;
+}
+
+footer > button:hover {
+    cursor: pointer;
+
+    background-color: var(--reguildedRedHover);
+    box-shadow: var(--reguildedRedHover) 0px 0px 30px;
+}
+
+i {
+    color: var(--reguildedRed)
 }
