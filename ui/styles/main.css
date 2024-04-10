@@ -1,22 +1,12 @@
+:root {
+    --injectButtonColor: #64CEF5;
+    --injectButtonHoverColor: #37C0F2;
+    --updateButtonColor: #F59865;
+    --updateButtonHoverColor: #F27937;
+}
+
 section > div.screen {
     background-color: transparent;
-}
-
-#errorScreen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#errorScreen > i {
-    font-size: 5em;
-}
-
-#errorScreen > p {
-    margin: var(--padding);
-    font-size: large;
-    text-align: center;
 }
 
 .clickableText {
@@ -40,4 +30,114 @@ section > div.screen {
 
 section > div.screen.hidden {
     display: none !important;
+}
+
+/* Error Screen Styles */
+#errorScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#errorScreen > i {
+    font-size: 5em;
+}
+
+#errorScreen > p {
+    margin: var(--padding);
+    font-size: large;
+    text-align: center;
+}
+
+/* Util Screen Styles */
+#utilScreen {
+    color: white;
+    text-align: left;
+}
+
+.utilTable {
+    width: 100%;
+    table-layout: fixed;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0 var(--padding);
+}
+
+.utilTableHeader {
+    border-bottom: 2px solid var(--containerBackground);
+}
+
+th, td {
+    width: auto;
+}
+
+.namedColumn {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+td.namedColumn {
+    color: var(--grayText)
+}
+
+.utilButtons {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--paddingSm);
+
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.utilButtons button {
+    color: white;
+    font-weight: bold;
+    border-radius: var(--buttonBorderSmr);
+    padding: var(--paddingMd);
+    border: none;
+
+    height: 1.75rem;
+    transition: 200ms color;
+}
+
+.utilButtons button:hover {
+    cursor: pointer;
+}
+
+#utilScreenInjectButton {
+    background-color: var(--injectButtonColor);
+    box-shadow: var(--injectButtonColor) 0 0 7px;
+}
+
+#utilScreenInjectButton:hover {
+    background-color: var(--injectButtonHoverColor);
+    box-shadow: var(--injectButtonHoverColor) 0 0 7px;
+}
+
+#utilScreenUninjectButton {
+    background-color: var(--reguildedRed);
+    box-shadow: var(--reguildedRed) 0 0 7px;
+}
+
+#utilScreenUninjectButton:hover {
+    background-color: var(--reguildedRedHover);
+    box-shadow: var(--reguildedRedHover) 0 0 7px;
+}
+
+#utilScreenUpdateButton {
+    background-color: var(--updateButtonColor);
+    box-shadow: var(--updateButtonColor) 0 0 7px;
+}
+
+#utilScreenUpdateButton:hover {
+    background-color: var(--updateButtonHoverColor);
+    box-shadow: var(--updateButtonHoverColor) 0 0 7px;
+}
+
+.utilButtons button.disabled {
+    background-color: var(--containerBackground) !important;
+    color: var(--grayText) !important;
+    box-shadow: none !important;
 }

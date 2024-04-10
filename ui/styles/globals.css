@@ -9,10 +9,13 @@
     --reguildedRedHover: #F23737;
 
     --paddingSm: 5px;
+    --paddingMd: 7px;
     --padding: 10px;
 
     --containerBorder: 0.5rem;
     --buttonBorder: 2rem;
+    --buttonBorderSm: 1rem;
+    --buttonBorderSmr: .75rem;
 }
 
 html {
@@ -107,7 +110,7 @@ footer > button {
     color: white;
     font-weight: bolder;
     background-color: var(--reguildedRed);
-    box-shadow: var(--reguildedRed) 0px 0px 30px;
+    box-shadow: var(--reguildedRed) 0 0 30px;
 
     transition: all 200ms;
 }
@@ -116,7 +119,7 @@ footer > button:hover {
     cursor: pointer;
 
     background-color: var(--reguildedRedHover);
-    box-shadow: var(--reguildedRedHover) 0px 0px 30px;
+    box-shadow: var(--reguildedRedHover) 0 0 30px;
 }
 
 i {

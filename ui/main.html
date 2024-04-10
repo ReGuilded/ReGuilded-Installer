@@ -35,8 +35,29 @@
 
                 </div>
 
-                <div id="utilScreen" class="screen hidden">
-                    <p>Hi there!</p>
+                <div id="utilScreen" class="screen">
+                    <table class="utilTable">
+                        <thead>
+                            <tr>
+                                <th class="utilTableHeader namedColumn">Guilded Path</th>
+                                <th class="utilTableHeader namedColumn">ReGuilded Path</th>
+                                <th class="utilTableHeader namedColumn">ReGuilded Version</th>
+                                <th class="utilTableHeader">ReGuilded Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="utilTableItem namedColumn">C:\Users\USER_NAME\AppData\Local\Programs\Guilded</td>
+                                <td class="utilTableItem namedColumn">C:\Program Files\ReGuilded</td>
+                                <td class="utilTableItem namedColumn">v1.0.0-alpha</td>
+                                <td class="utilTableItem utilButtons">
+                                    <button id="utilScreenInjectButton">Inject</button>
+                                    <button id="utilScreenUninjectButton" class="disabled">Uninject</button>
+                                    <button id="utilScreenUpdateButton">Update</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </section>
