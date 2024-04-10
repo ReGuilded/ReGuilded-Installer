@@ -1,23 +1,22 @@
 /* Init Handler */
 invoke("get_rg_install")
     .then(() => {
-        toggleScreen(window.utilScreen, true)
+        toggleElement(window.utilScreen, true)
     })
     .catch((error) => {
         switch (error) {
             case "NOT_SUPPORTED":
                 window.errorScreenText.innerHTML = "Uh Oh! It looks like your<br />Operating System is unsupported!"
-                toggleScreen(window.errorScreen, true)
+                toggleElement(window.errorScreen, true)
                 return;
             case "NO_INSTALL":
-                console.log("HAHA");
-                toggleScreen(window.errorScreen, true)
+                toggleElement(window.errorScreen, true)
                 return;
         }
     })
 
-/* Screen Handler */
-function toggleScreen(screen, isShown) {
+/* Element Handler */
+function toggleElement(screen, isShown) {
     switch (isShown) {
         case true:
             screen.classList.remove("hidden");
@@ -29,3 +28,8 @@ function toggleScreen(screen, isShown) {
 }
 
 /* Error Screen Handling */
+window.newInstallText.addEventListener("click", () => {
+    toggleElement(window.errorScreen, false)
+    toggleElement(window.newInstallScreen, true)
+    toggleElement(window.installButton, true);
+})

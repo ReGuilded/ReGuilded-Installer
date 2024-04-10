@@ -3,6 +3,8 @@
 :root {
     --backgroundColor: #161616;
     --containerBackground: rgba(255, 255, 255, 0.05);
+    --innerContainerBackground: #373737;
+    --InnerContainerText: #BDBDBD;
     --grayText: rgba(255, 255, 255, 0.5);
     --textColor: #ffffff;
     --reguildedRed: #F56565;

@@ -22,7 +22,6 @@ fn get_rg_install() -> Result<(), String> {
         if Path::new(&reguilded_asar).exists() {
             Ok(())
         } else {
-            println!("Haha");
             Err("NO_INSTALL".into())
         }
     } else {
