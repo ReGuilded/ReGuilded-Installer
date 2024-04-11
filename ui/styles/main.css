@@ -28,7 +28,7 @@ section > div.screen {
     color: inherit;
 }
 
-section > div.screen.hidden {
+.hidden {
     display: none !important;
 }
 
@@ -145,4 +145,67 @@ td.namedColumn {
     background-color: var(--containerBackground) !important;
     color: var(--grayText) !important;
     box-shadow: none !important;
+}
+
+/* Install Screen Styles */
+#newInstallScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.optionsContainer {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: repeat(3, auto);
+    grid-column-gap: var(--padding);
+    grid-row-gap: var(--paddingSm);
+}
+
+#installHeader {
+    color: white;
+    font-weight: bolder;
+    font-size: xx-large;
+}
+
+.optionText {
+    color: white;
+    font-size: larger;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.optionContainer {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--padding) * 3);
+
+    background-color: var(--innerContainerBackground);
+    color: var(--InnerContainerText);
+    padding: var(--padding);
+    border: none;
+
+    border-radius: var(--buttonBorderSmr);
+}
+
+#locationContainer {
+    width: calc(80% - calc(var(--padding) * 2));
+    height: calc(100% - calc(var(--padding) * 2));
+}
+
+#locationText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: var(--InnerContainerText);
+}
+
+#folderIcon {
+    color: var(--InnerContainerText);
 }
