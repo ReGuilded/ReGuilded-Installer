@@ -1,8 +1,8 @@
 :root {
-    --injectButtonColor: #64CEF5;
-    --injectButtonHoverColor: #37C0F2;
-    --updateButtonColor: #F59865;
-    --updateButtonHoverColor: #F27937;
+    --injectButtonColor: #ed4e3d;
+    --injectButtonHoverColor: #c93f2f;
+    --updateButtonColor: #1db53c;
+    --updateButtonHoverColor: #178d2f;
 }
 
 section > div.screen {
@@ -76,6 +76,7 @@ th, td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-bottom: 15px;
 }
 
 td.namedColumn {
@@ -92,10 +93,11 @@ td.namedColumn {
 }
 
 .utilButtons button {
-    color: white;
+    color: rgb(233, 242, 241);
     font-weight: bold;
-    border-radius: var(--buttonBorderSmr);
-    padding: var(--paddingMd);
+    border-radius: 7px;
+    padding-left:15px;
+    padding-right:15px;
     border: none;
 
     height: 1.75rem;
@@ -103,37 +105,40 @@ td.namedColumn {
 }
 
 .utilButtons button:hover {
+    color:rgb(196, 202, 202);
     cursor: pointer;
 }
 
 #utilScreenInjectButton {
+    transition: ease all 0.3s;
     background-color: var(--injectButtonColor);
-    box-shadow: var(--injectButtonColor) 0 0 7px;
 }
 
 #utilScreenInjectButton:hover {
+    transition: ease all 0.3s;
     background-color: var(--injectButtonHoverColor);
-    box-shadow: var(--injectButtonHoverColor) 0 0 7px;
+    box-shadow: var(--injectButtonHoverColor) 0 0 3px;
 }
 
 #utilScreenUninjectButton {
+    transition: ease all 0.3s;
     background-color: var(--reguildedRed);
-    box-shadow: var(--reguildedRed) 0 0 7px;
+    box-shadow: var(--reguildedRed) 0 0 3px;
 }
 
 #utilScreenUninjectButton:hover {
     background-color: var(--reguildedRedHover);
-    box-shadow: var(--reguildedRedHover) 0 0 7px;
+    box-shadow: var(--reguildedRedHover) 0 0 3px;
 }
 
 #utilScreenUpdateButton {
+    transition: ease all 0.3s;
     background-color: var(--updateButtonColor);
-    box-shadow: var(--updateButtonColor) 0 0 7px;
 }
 
 #utilScreenUpdateButton:hover {
     background-color: var(--updateButtonHoverColor);
-    box-shadow: var(--updateButtonHoverColor) 0 0 7px;
+    box-shadow: var(--updateButtonHoverColor) 0 0 3px;
 }
 
 .utilButtons button.disabled {

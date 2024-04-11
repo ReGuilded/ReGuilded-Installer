@@ -13,7 +13,7 @@
     --padding: 10px;
 
     --containerBorder: 0.5rem;
-    --buttonBorder: 2rem;
+    --buttonBorder: 10px;
     --buttonBorderSm: 1rem;
     --buttonBorderSmr: .75rem;
 }
@@ -101,8 +101,7 @@ footer > p {
 }
 
 footer > button {
-    height: 45px;
-    width: 65px;
+    padding: 10px 20px;
     border-radius: var(--buttonBorder);
     border: none;
 
@@ -110,9 +109,8 @@ footer > button {
     color: white;
     font-weight: bolder;
     background-color: var(--reguildedRed);
-    box-shadow: var(--reguildedRed) 0 0 30px;
 
-    transition: all 200ms;
+    transition: ease all 0.3s;
 }
 
 footer > button:hover {
