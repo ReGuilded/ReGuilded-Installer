@@ -201,9 +201,8 @@ td.namedColumn {
 }
 
 #locationContainer {
-    width: calc(100% - calc(var(--padding) * 2));
+    width: 250px;
     height: calc(100% - calc(var(--padding) * 2));
-    overflow: hidden;
 }
 
 #locationText {
@@ -212,7 +211,6 @@ td.namedColumn {
     text-overflow: ellipsis;
 
     color: var(--InnerContainerText);
-    max-width: calc(100% - calc(var(--padding) * 2));
 }
 
 #folderIcon {
