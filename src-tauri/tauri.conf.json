@@ -12,7 +12,17 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "fs": {
+        "all": true,
+        "scope": ["$RESOURCE/resources/releases.json"]
+      },
+      "path": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
+      }
     },
     "bundle": {
       "active": true,
@@ -38,7 +48,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "resources/*"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

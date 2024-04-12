@@ -145,17 +145,21 @@ td.namedColumn {
 /* Install Screen Styles */
 #newInstallScreen {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-evenly;
     align-items: center;
 }
 
 .optionsContainer {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: max-content auto;
     grid-template-rows: repeat(3, auto);
     grid-column-gap: var(--padding);
     grid-row-gap: var(--paddingSm);
+
+    width: 50%;
+    min-width: 50%;
+    max-width: 50%;
 }
 
 #installHeader {
@@ -163,20 +167,18 @@ td.namedColumn {
     font-weight: bolder;
     font-size: xx-large;
 }
-
 .optionText {
-    color: white;
-    font-size: larger;
-
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-right: var(--paddingSm);
 }
 
 .optionContainer {
-    width: 80%;
+    width: 100%;
     height: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: calc(var(--padding) * 3);
 
@@ -184,13 +186,24 @@ td.namedColumn {
     color: var(--InnerContainerText);
     padding: var(--padding);
     border: none;
+    font-size: small;
 
     border-radius: var(--buttonBorderSmr);
 }
 
+.optionsContainer > div > select {
+    border: 0;
+    border-right: var(--padding) solid transparent;
+}
+
+.optionContainer:hover {
+    cursor: pointer;
+}
+
 #locationContainer {
-    width: calc(80% - calc(var(--padding) * 2));
+    width: calc(100% - calc(var(--padding) * 2));
     height: calc(100% - calc(var(--padding) * 2));
+    overflow: hidden;
 }
 
 #locationText {
@@ -199,6 +212,7 @@ td.namedColumn {
     text-overflow: ellipsis;
 
     color: var(--InnerContainerText);
+    max-width: calc(100% - calc(var(--padding) * 2));
 }
 
 #folderIcon {
