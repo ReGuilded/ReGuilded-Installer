@@ -1,7 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::fs::File;
+mod util { pub mod platform_handler; }
+mod tasks { pub mod install; }
+
+use std::fs::{File};
 use std::io::Write;
 use std::path::Path;
 use reqwest::blocking::Client;
@@ -9,8 +12,7 @@ use reqwest::header;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use crate::util::platform_handler::PlatformHandler;
-
-mod util { pub mod platform_handler; }
+use tasks::install;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Asset {
@@ -25,6 +27,11 @@ struct Release {
     draft: bool,
     prerelease: bool,
     assets: Vec<Asset>
+}
+
+pub struct DesiredRgOptions {
+    rg_version: String,
+    rg_path: String
 }
 
 #[tauri::command]
@@ -57,6 +64,21 @@ fn get_rg_path() -> String {
     let platform = platform_handler.get_platform();
 
     platform.unwrap().reguilded_dir.to_string_lossy().to_string().into()
+}
+
+#[tauri::command(rename_all = "snake_case")]
+fn install_rg(desired_rg_version: &str, desired_rg_path: &str) -> Result<(), String> {
+    println!("RG Version: {}, RG Path: {}", desired_rg_version, desired_rg_path);
+
+    let platform_handler = &*PLATFORM_HANDLER.lock().unwrap();
+    let platform = platform_handler.get_platform();
+
+    install::install(
+        DesiredRgOptions{ rg_version: desired_rg_version.to_string(), rg_path: desired_rg_path.to_string() },
+        platform.cloned().unwrap()
+    );
+
+    Ok(())
 }
 
 fn fetch_releases_and_save(app_handle: AppHandle) -> Result<(), Box<dyn std::error::Error>> {
@@ -114,7 +136,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             preface_begin,
             get_rg_install,
-            get_rg_path
+            get_rg_path,
+            install_rg
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

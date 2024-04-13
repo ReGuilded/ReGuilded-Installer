@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "reguilded-installer",
-    "version": "1.0.0-alpha"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -52,7 +52,7 @@
         "resources/*"
       ],
       "shortDescription": "",
-      "targets": "all",
+      "targets": ["deb", "nsis", "msi", "app", "dmg", "updater"],
       "windows": {
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",

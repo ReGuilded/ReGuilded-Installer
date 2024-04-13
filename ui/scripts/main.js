@@ -39,8 +39,8 @@ function toggleElement(element, isShown) {
 
 /* Error Screen Handling */
 window.newInstallText.addEventListener("click", () => {
-    toggleElement(window.errorScreen, false)
-    toggleElement(window.newInstallScreen, true)
+    toggleElement(window.errorScreen, false);
+    toggleElement(window.newInstallScreen, true);
     toggleElement(window.installButton, true);
 })
 
@@ -131,3 +131,21 @@ window.locationContainer.addEventListener("click", async () => {
         reguildedPath = selected;
     }
 })
+
+window.installButton.addEventListener("click", async () => {
+    toggleElement(window.installButton, false);
+    toggleElement(window.newInstallScreen, false);
+    await install();
+});
+
+/* Process Screen Handling */
+async function install() {
+    toggleElement(window.processingScreen, true);
+
+    const installOpts = {
+        desired_rg_version: window.releaseVersion.value,
+        desired_rg_path: reguildedPath
+    }
+
+    invoke("install_rg", installOpts)
+}

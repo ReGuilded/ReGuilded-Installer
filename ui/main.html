@@ -17,10 +17,10 @@
             </nav>
 
             <section class="container">
-                <div id="errorScreen" class="screen hidden">
+                <div id="errorScreen" class="screen infoScreen hidden">
                     <i class="fa-solid fa-triangle-exclamation"></i>
 
-                    <p id="errorScreenText">
+                    <p id="errorScreenText infoScreenText">
                         Uh Oh! Unable to find a ReGuilded Install.<br />
                         You can <a id="newInstallText" class="clickableText">create a new installation</a> or if you<br />
                         already have one, you can <a id="locateInstallText" class="clickableText">locate it</a>.
@@ -53,8 +53,13 @@
                     </div>
                 </div>
 
-                <div id="processingScreen" class="screen hidden">
+                <div id="processingScreen" class="screen infoScreen hidden">
+                    <i class="fa-solid fa-arrows-rotate animate-rotate"></i>
 
+                    <p id="processingScreenText infoScreenText">
+                        Give us just a moment while we install<br />
+                        ReGuilded and make sure it's setup correctly!
+                    </p>
                 </div>
 
                 <div id="utilScreen" class="screen hidden">

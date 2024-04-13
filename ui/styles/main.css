@@ -9,6 +9,12 @@ section > div.screen {
     background-color: transparent;
 }
 
+.hidden {
+    display: none !important;
+}
+
+
+/* Error Screen Styles */
 .clickableText {
     color: var(--reguildedRed);
     font-style: italic;
@@ -28,23 +34,21 @@ section > div.screen {
     color: inherit;
 }
 
-.hidden {
-    display: none !important;
-}
 
-/* Error Screen Styles */
-#errorScreen {
+/* Info Screen Styles */
+.infoScreen {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#errorScreen > i {
+.infoScreen > i {
     font-size: 5em;
+    color: var(--grayText);
 }
 
-#errorScreen > p {
+.infoScreen > p {
     margin: var(--padding);
     font-size: large;
     text-align: center;
