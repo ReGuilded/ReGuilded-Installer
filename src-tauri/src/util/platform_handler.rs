@@ -25,8 +25,8 @@ pub struct PlatformHandler {
 impl PlatformHandler {
     pub fn new() -> Self {
         let mut platforms = std::collections::HashMap::<String, Platform>::new();
-        platforms.insert("linux".to_string(), Platform::new("guilded", "/opt/Guilded", "/usr/local/share/ReGuilded"));
-        platforms.insert("macos".to_string(), Platform::new("guilded", "/Applications/Guilded.app", "/Applications/ReGuilded"));
+        platforms.insert("linux".to_string(), Platform::new("guilded", "/usr/local/share/ReGuilded", "/opt/Guilded"));
+        platforms.insert("macos".to_string(), Platform::new("guilded", "/Applications/ReGuilded", "/Applications/Guilded.app"));
         platforms.insert("windows".to_string(),
                          Platform::new("Guilded",
                                        &std::env::var("ProgramW6432")

@@ -7,8 +7,8 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "reguilded-installer",
-    "version": "1.0.0"
+    "productName": "ReGuilded Installer",
+    "version": "1.0.0-alpha"
   },
   "tauri": {
     "allowlist": {
