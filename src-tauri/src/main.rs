@@ -1,18 +1,23 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod util { pub mod platform_handler; }
-mod tasks { pub mod install; }
+mod util {
+    pub mod platform_handler;
+}
+mod tasks {
+    pub mod install;
+}
 
-use std::fs::{File};
-use std::io::Write;
-use std::path::Path;
+use crate::util::platform_handler::PlatformHandler;
 use reqwest::blocking::Client;
 use reqwest::header;
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager};
-use crate::util::platform_handler::PlatformHandler;
+use std::fs::File;
+use std::io::Write;
+use std::path::Path;
 use tasks::install;
+use tauri::{AppHandle, Manager};
+use tauri::path::BaseDirectory;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Asset {
@@ -26,17 +31,17 @@ struct Release {
     tag_name: String,
     draft: bool,
     prerelease: bool,
-    assets: Vec<Asset>
+    assets: Vec<Asset>,
 }
 
 pub struct DesiredRgOptions {
     rg_version: String,
-    rg_path: String
+    rg_path: String,
 }
 
 #[tauri::command]
 fn preface_begin(window: tauri::Window) {
-    let _ = window.eval(&format!("window.location.pathname = '/{}'", "main.html"));
+    let _ = window.webviews().get(0).unwrap().eval(&format!("window.location.pathname = '/{}'", "main.html"));
 }
 
 #[tauri::command]
@@ -44,7 +49,11 @@ fn get_rg_install() -> Result<(), String> {
     let platform_handler = &*PLATFORM_HANDLER.lock().unwrap();
 
     if let Some(platform) = platform_handler.get_platform() {
-        let reguilded_asar = platform.reguilded_dir.join("reguilded.asar").to_string_lossy().to_string();
+        let reguilded_asar = platform
+            .reguilded_dir
+            .join("reguilded.asar")
+            .to_string_lossy()
+            .to_string();
 
         if Path::new(&reguilded_asar).exists() {
             Ok(())
@@ -56,55 +65,73 @@ fn get_rg_install() -> Result<(), String> {
     }
 }
 
-
 #[tauri::command]
 fn get_rg_path() -> String {
     let platform_handler = &*PLATFORM_HANDLER.lock().unwrap();
 
     let platform = platform_handler.get_platform();
 
-    platform.unwrap().reguilded_dir.to_string_lossy().to_string().into()
+    platform
+        .unwrap()
+        .reguilded_dir
+        .to_string_lossy()
+        .to_string()
+        .into()
 }
 
 #[tauri::command(rename_all = "snake_case")]
 fn install_rg(desired_rg_version: &str, desired_rg_path: &str) -> Result<(), String> {
-    println!("RG Version: {}, RG Path: {}", desired_rg_version, desired_rg_path);
+    println!(
+        "RG Version: {}, RG Path: {}",
+        desired_rg_version, desired_rg_path
+    );
 
     let platform_handler = &*PLATFORM_HANDLER.lock().unwrap();
     let platform = platform_handler.get_platform();
 
     install::install(
-        DesiredRgOptions{ rg_version: desired_rg_version.to_string(), rg_path: desired_rg_path.to_string() },
-        platform.cloned().unwrap()
+        DesiredRgOptions {
+            rg_version: desired_rg_version.to_string(),
+            rg_path: desired_rg_path.to_string(),
+        },
+        platform.cloned().unwrap(),
     );
 
     Ok(())
 }
 
-fn fetch_releases_and_save(app_handle: AppHandle) -> Result<(), Box<dyn std::error::Error>> {
+fn fetch_releases_and_save(app_handle: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
 
-    let request = client.get("https://api.github.com/repos/reguilded/reguilded/releases")
-        .header(header::USER_AGENT, format!("ReGuilded-Installer/{}", env!("CARGO_PKG_VERSION")));
+    let request = client
+        .get("https://api.github.com/repos/reguilded/reguilded/releases")
+        .header(
+            header::USER_AGENT,
+            format!("ReGuilded-Installer/{}", env!("CARGO_PKG_VERSION")),
+        );
 
     let response = request.send()?;
 
     if response.status().is_success() {
         let releases: Vec<Release> = response.json()?;
 
-        let resource_path = app_handle.path_resolver()
-            .resolve_resource("resources/releases.json")
+        let resource_path = app_handle
+            .path()
+            .resolve("resources/releases.json", BaseDirectory::Resource)
             .expect("Failed to resolve resource.");
 
-
         let mut file = File::create(&resource_path)?;
-        file.write_all(serde_json::to_string_pretty(&releases).unwrap().as_bytes()).unwrap();
+        file.write_all(serde_json::to_string_pretty(&releases).unwrap().as_bytes())
+            .unwrap();
 
         Ok(())
     } else {
         let status = response.status();
         let body = response.text()?;
-        eprintln!("Failed to fetch releases. Status code: {}. Body: {}", status, body);
+        eprintln!(
+            "Failed to fetch releases. Status code: {}. Body: {}",
+            status, body
+        );
         Err("Failed to fetch releases".into())
     }
 }
@@ -115,9 +142,11 @@ lazy_static::lazy_static! {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let splashscreen_window = app.get_window("splashscreen").unwrap();
-            let preface_window = app.get_window("preface").unwrap();
+            let main_window = app.get_window("main").unwrap();
 
             if let Err(err) = fetch_releases_and_save(app.handle()) {
                 eprintln!("There was an error: {}", err);
@@ -128,8 +157,8 @@ fn main() {
             }
 
             splashscreen_window.close().unwrap();
-            preface_window.show().unwrap();
-            preface_window.set_focus().unwrap();
+            main_window.show().unwrap();
+            main_window.set_focus().unwrap();
 
             Ok(())
         })

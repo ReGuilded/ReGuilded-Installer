@@ -1,9 +1,9 @@
+use crate::util::platform_handler::Platform;
+use crate::DesiredRgOptions;
+use runas::Command;
 use std::fs::{create_dir, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use runas::Command;
-use crate::DesiredRgOptions;
-use crate::util::platform_handler::Platform;
 
 fn check_write_permission(folder_path: String) -> bool {
     let temp_file_path = format!("{}/.tmp_write_permission_check", folder_path);
@@ -25,7 +25,10 @@ fn check_write_permission(folder_path: String) -> bool {
 }
 
 fn create_rg_directory(rg_directory: PathBuf, is_permitted: bool) -> Result<(), String> {
-    println!("Directory to create: {}", rg_directory.to_string_lossy().to_string());
+    println!(
+        "Directory to create: {}",
+        rg_directory.to_string_lossy().to_string()
+    );
 
     println!("{}", is_permitted);
 
@@ -48,7 +51,7 @@ fn create_rg_directory(rg_directory: PathBuf, is_permitted: bool) -> Result<(), 
                 .map_err(|e| e.to_string())?;
 
             if !status.success() {
-                return Err("Failed to create directory.".into())
+                return Err("Failed to create directory.".into());
             }
         }
     };
@@ -65,10 +68,10 @@ pub fn install(desired_rg_options: DesiredRgOptions, user_platform: Platform) {
     let parent_dir = rg_path_buf.join("..");
 
     /*
-        Test if the Desired RG Directory exits,
-        if it does: we will test the permissions on that directory.
-        If it doesn't: we will test the permission on the parent directory.
-     */
+       Test if the Desired RG Directory exits,
+       if it does: we will test the permissions on that directory.
+       If it doesn't: we will test the permission on the parent directory.
+    */
     if Path::new(&rg_path_buf).exists() {
         dir_to_test = rg_path_buf.clone();
         rg_path_exists = true;
